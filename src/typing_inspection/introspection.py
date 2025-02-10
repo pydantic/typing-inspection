@@ -28,10 +28,10 @@ if sys.version_info >= (3, 10):
     def is_union_origin(obj: Any, /) -> bool:
         """Return whether the provided origin is the union form.
 
-        >>> is_union_origin(typing.Union)
-        True
-        >>> is_union_origin(get_origin(int | str))
-        True
+            >>> is_union_origin(typing.Union)
+            True
+            >>> is_union_origin(get_origin(int | str))
+            True
         """
         return typing_objects.is_union(obj) or obj is types.UnionType
 
@@ -40,10 +40,10 @@ else:
     def is_union_origin(obj: Any, /) -> bool:
         """Return whether the provided origin is the union form.
 
-        >>> is_union_origin(typing.Union)
-        True
-        >>> is_union_origin(get_origin(int | str))
-        True
+            >>> is_union_origin(typing.Union)
+            True
+            >>> is_union_origin(get_origin(int | str))
+            True
         """
         return typing_objects.is_union(obj)
 
