@@ -21,6 +21,7 @@ classifiers = [
     'Programming Language :: Python :: 3.11',
     'Programming Language :: Python :: 3.12',
     'Programming Language :: Python :: 3.13',
+    'Programming Language :: Python :: 3.14',
     'Typing :: Typed',
     'License :: OSI Approved :: MIT License',
     'Intended Audience :: Developers',
@@ -32,14 +33,21 @@ dependencies = [
 ]
 
 [dependency-groups]
+tests = [
+    'coverage>=7.6.12',
+    'pytest>=8.3.4',
+    'pytest-cov>=6.0.0',
+]
 docs = [
     'furo>=2024.8.6',
     'sphinx>=7.4.7',
+    'sphinx-lint>=1.0.0',
     'sphinx-paramlinks>=0.6.0',
     'sphinx-toggleprompt>=0.6.0',
 ]
 lint = [
-    'ruff>=0.9.5',
+    'pyright>=1.1.394',
+    'ruff>=0.9.6',
 ]
 
 
@@ -59,19 +67,21 @@ select = [
     'I',      # isort
     'PL',     # Pylint
     'RUF',    # Ruff
-    'Q',      # flake8-quotes
     'YTT',    # flake8-2020
     'B',      # flake8-bugbear
     'C4',     # flake8-comprehensions
     'T10',    # flake8-debugger
     'FA',     # flake8-future-annotations
     'PIE',    # flake8-pie
+    'PYI',    # flake8-pyi
     'T20',    # flake8-print
+    'Q',      # flake8-quotes
     'RSE',    # flake8-raise
     'PTH',    # flake8-use-pathlib
 ]
 ignore = [
     'PLR0912',
+    'PYI021',  # docstrings in stubs
 ]
 
 [tool.ruff.lint.flake8-quotes]
@@ -80,5 +90,22 @@ inline-quotes = 'single'
 [tool.ruff.lint.isort]
 known-first-party = ['typing_inspection']
 
+[tool.pyright]
+typeCheckingMode = 'strict'
+pythonVersion = '3.13'
+
 [tool.pytest.ini_options]
 pythonpath = 'src'
+
+[tool.coverage.run]
+source = ['src/typing_inspection']
+branch = true
+relative_files = true
+
+[tool.coverage.report]
+exclude_also = [
+    'if TYPE_CHECKING:',
+]
+
+[tool.coverage.paths]
+source = ['src']

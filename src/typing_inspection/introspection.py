@@ -28,10 +28,10 @@ if sys.version_info >= (3, 10):
     def is_union_origin(obj: Any, /) -> bool:
         """Return whether the provided origin is the union form.
 
-            >>> is_union_origin(typing.Union)
-            True
-            >>> is_union_origin(get_origin(int | str))
-            True
+        >>> is_union_origin(typing.Union)
+        True
+        >>> is_union_origin(get_origin(int | str))
+        True
         """
         return typing_objects.is_union(obj) or obj is types.UnionType
 
@@ -40,10 +40,10 @@ else:
     def is_union_origin(obj: Any, /) -> bool:
         """Return whether the provided origin is the union form.
 
-            >>> is_union_origin(typing.Union)
-            True
-            >>> is_union_origin(get_origin(int | str))
-            True
+        >>> is_union_origin(typing.Union)
+        True
+        >>> is_union_origin(get_origin(int | str))
+        True
         """
         return typing_objects.is_union(obj)
 
@@ -151,11 +151,11 @@ def get_literal_values(
                     sub_args = get_literal_values(
                         alias_value, type_check=type_check, unpack_type_aliases=unpack_type_aliases
                     )
-                    values_and_type.extend((a, type(a)) for a in sub_args)
+                    values_and_type.extend((a, type(a)) for a in sub_args)  # pyright: ignore[reportUnknownArgumentType]
             else:
                 if type_check:
                     _literal_type_check(arg)
-                values_and_type.append((None if arg is typing_objects.NoneType else arg, type(arg)))
+                values_and_type.append((None if arg is typing_objects.NoneType else arg, type(arg)))  # pyright: ignore[reportUnknownArgumentType]
 
         yield from (p for p, _ in dict.fromkeys(values_and_type))
 
@@ -367,7 +367,7 @@ def inspect_annotation(
         if 'final' not in allowed_qualifiers:
             raise ForbiddenQualifier('final')
         qualifiers.add('final')
-        # TODO if the annotation comes from an annotated assigment, we should
+        # TODO if the annotation comes from an annotated assignment, we should
         # infer the annotation from the assigned value (see
         # https://typing.readthedocs.io/en/latest/spec/qualifiers.html#syntax).
         # To do so, we could have a special `Infer` sentinel, or require
@@ -378,7 +378,7 @@ def inspect_annotation(
 
 
 def _unpack_annotated_inner(
-    annotation, unpack_type_aliases: Literal['lenient', 'eager'], check_annotated: bool
+    annotation: Any, unpack_type_aliases: Literal['lenient', 'eager'], check_annotated: bool
 ) -> tuple[Any, list[Any]]:
     origin = get_origin(annotation)
     if check_annotated and typing_objects.is_annotated(origin):
