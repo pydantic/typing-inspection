@@ -65,7 +65,7 @@ def get_literal_values(
     /,
     *,
     type_check: bool = False,
-    unpack_type_aliases: Literal['keep', 'lenient', 'eager'] = 'eager',
+    unpack_type_aliases: Literal['skip', 'lenient', 'eager'] = 'eager',
 ) -> Generator[Any]:
     """Yield the values contained in the provided :data:`~typing.Literal` :term:`tspec:special form`.
 
@@ -76,13 +76,13 @@ def get_literal_values(
         unpack_type_aliases: What to do when encountering :pep:`695` :ref:`type aliases <python:type-aliases>`.
             Can be one of:
 
-            - :python:`"keep"`: Do not try to parse type aliases. Note that this can lead to incorrect results::
+            - :python:`"skip"`: Do not try to parse type aliases. Note that this can lead to incorrect results::
 
                 >>> type MyAlias = Literal[1, 2]
-                >>> list(get_literal_values(Literal[MyAlias, 3], unpack_type_aliases="keep"))
+                >>> list(get_literal_values(Literal[MyAlias, 3], unpack_type_aliases="skip"))
                 [MyAlias, 3]
 
-            - :python:`"lenient"`: Try to parse type aliases, and fallback to :python:`"keep"` if the type alias
+            - :python:`"lenient"`: Try to parse type aliases, and fallback to :python:`"skip"` if the type alias
               can't be inspected (because of an undefined forward reference).
 
             - :python:`"eager`: Parse type aliases and raise any encountered :exc:`NameError` exceptions (the default)::
@@ -103,7 +103,7 @@ def get_literal_values(
         .. code-block:: pycon
 
             >>> type Ints = Literal[1, 2]
-            >>> list(get_literal_values(Literal[1, Ints], expand_type_alias="keep"))
+            >>> list(get_literal_values(Literal[1, Ints], unpack_type_alias="skip"))
             ["a", Ints]
             >>> list(get_literal_values(Literal[1, Ints]))
             [1, 2]
@@ -115,7 +115,7 @@ def get_literal_values(
     # `literal` is guaranteed to be a `Literal[...]` special form, so use
     # `__args__` directly instead of calling `get_args()`.
 
-    if unpack_type_aliases == 'keep':
+    if unpack_type_aliases == 'skip':
         _has_none = False
         # `Literal` parameters are already deduplicated, no need to do it ourselves.
         # (we only check for `None` and `NoneType`, which should be considered as duplicates).
@@ -280,7 +280,7 @@ def inspect_annotation(
     /,
     *,
     annotation_source: AnnotationSource,
-    unpack_type_aliases: Literal['keep', 'lenient', 'eager'] = 'eager',
+    unpack_type_aliases: Literal['skip', 'lenient', 'eager'] = 'eager',
 ) -> InspectedAnnotation:
     """Inspect an :term:`tspec:annotation expression`, extracting any :term:`tspec:type qualifier` and metadata.
 
@@ -297,13 +297,13 @@ def inspect_annotation(
         unpack_type_aliases: What to do when encountering :pep:`695` :ref:`type aliases <python:type-aliases>`.
             Can be one of:
 
-            - :python:`"keep"`: Do not try to parse type aliases. Note that this can lead to incorrect results::
+            - :python:`"skip"`: Do not try to parse type aliases. Note that this can lead to incorrect results::
 
                 >>> type MyInt = Annotated[int, "meta"]
-                >>> inspect_annotation(MyInt, annotation_source=AnnotationSource.BARE, unpack_type_aliases="keep")
+                >>> inspect_annotation(MyInt, annotation_source=AnnotationSource.BARE, unpack_type_aliases="skip")
                 InspectedAnnotation(type=MyInt, qualifiers={}, metadata=[])
 
-            - :python:`"lenient"`: Try to parse type aliases, and fallback to :python:`"keep"` if the type alias
+            - :python:`"lenient"`: Try to parse type aliases, and fallback to :python:`"skip"` if the type alias
               can't be inspected (because of an undefined forward reference)::
 
                 >>> type MyInt = Annotated[Undefined, "meta"]
@@ -445,9 +445,9 @@ def _unpack_annotated_inner(
 
 # This could eventually be made public:
 def _unpack_annotated(
-    annotation: Any, /, *, unpack_type_aliases: Literal['keep', 'lenient', 'eager'] = 'eager'
+    annotation: Any, /, *, unpack_type_aliases: Literal['skip', 'lenient', 'eager'] = 'eager'
 ) -> tuple[Any, list[Any]]:
-    if unpack_type_aliases == 'keep':
+    if unpack_type_aliases == 'skip':
         if typing_objects.is_annotated(get_origin(annotation)):
             return annotation.__origin__, list(annotation.__metadata__)
         else:
