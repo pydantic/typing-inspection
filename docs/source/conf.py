@@ -44,13 +44,15 @@ autodoc_type_aliases = {
 extlinks = {
     'source': (SOURCE_URI, '%s'),
 }
-
+extlinks_detect_hardcoded_links = True
 
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
     'typing_extensions': ('https://typing-extensions.readthedocs.io/en/latest', None),
     'tspec': ('https://typing.readthedocs.io/en/latest', None),
 }
+
+linkcheck_ignore = [r'https://github.com/pydantic/typing-inspection/.*']  # remove when public
 
 
 # -- Options for HTML output -------------------------------------------------

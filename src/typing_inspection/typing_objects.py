@@ -272,7 +272,7 @@ def is_namedtuple(obj: Any, /) -> bool:
         >>> is_namedtuple(NamedTuple)
         False
     """
-    return isinstance(obj, type) and issubclass(obj, tuple) and hasattr(obj, '_fields')
+    return isinstance(obj, type) and issubclass(obj, tuple) and hasattr(obj, '_fields')  # pyright: ignore[reportUnknownArgumentType]
 
 
 # TypedDict?
@@ -456,7 +456,7 @@ DEPRECATED_ALIASES: Final[dict[Any, type[Any]]] = {
     typing.Container: collections.abc.Container,
     typing.Collection: collections.abc.Collection,
     # type ignore reason: https://github.com/python/typeshed/issues/6257:
-    typing.Callable: collections.abc.Callable,  # pyright: ignore[reportAssignmentType]
+    typing.Callable: collections.abc.Callable,  # pyright: ignore[reportAssignmentType, reportUnknownMemberType]
     typing.AbstractSet: collections.abc.Set,
     typing.MutableSet: collections.abc.MutableSet,
     typing.Mapping: collections.abc.Mapping,
@@ -492,5 +492,6 @@ DEPRECATED_ALIASES: Final[dict[Any, type[Any]]] = {
 
 # Add the `typing_extensions` aliases:
 for alias, target in list(DEPRECATED_ALIASES.items()):
-    if (te_alias := getattr(typing_extensions, alias.__name__, None)) is not None:
+    # Use `alias.__name__` when we drop support for Python 3.9
+    if (te_alias := getattr(typing_extensions, alias._name, None)) is not None:
         DEPRECATED_ALIASES[te_alias] = target
