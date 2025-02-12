@@ -264,9 +264,10 @@ def is_namedtuple(obj: Any, /) -> bool:
 
         >>> class User(NamedTuple):
         ...     name: str
+        ...
         >>> is_namedtuple(User)
         True
-        >>> City = collections.namedtuple()
+        >>> City = collections.namedtuple('City', [])
         >>> is_namedtuple(City)
         True
         >>> is_namedtuple(NamedTuple)

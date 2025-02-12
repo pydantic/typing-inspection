@@ -1,4 +1,4 @@
-sources = src docs/source/conf.py
+sources = src tests docs/source/conf.py
 
 .PHONY: .uv  ## Check that uv is installed
 .uv:
