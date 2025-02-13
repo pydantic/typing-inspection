@@ -9,7 +9,7 @@ description = 'Runtime typing introspection tools'
 authors = [
     {name = 'Victorien Plot', email = 'contact@vctrn.dev'},
 ]
-readme = 'README.rst'
+readme = 'README.md'
 classifiers = [
     'Development Status :: 3 - Alpha',
     'Programming Language :: Python',
