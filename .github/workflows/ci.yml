@@ -34,7 +34,7 @@ jobs:
         run: make typecheck
 
       - name: Run pre-commit
-        uses: pre-commition@v3.0.1
+        uses: pre-commit/action@v3.0.1
         with:
           extra_args: --all-files --verbose
 
