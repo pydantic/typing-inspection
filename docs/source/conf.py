@@ -52,7 +52,11 @@ intersphinx_mapping = {
     'tspec': ('https://typing.readthedocs.io/en/latest', None),
 }
 
-linkcheck_ignore = [r'https://github.com/pydantic/typing-inspection/.*']  # remove when public
+# remove when public
+linkcheck_ignore = [
+    r'https://github.com/pydantic/typing-inspection/.*',
+    r'https://coverage-badge.samuelcolvin.workers.dev/.*',
+]
 
 
 # -- Options for HTML output -------------------------------------------------
