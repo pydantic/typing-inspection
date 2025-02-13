@@ -1,15 +1,24 @@
 name: Tests
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - '**'
+  pull_request:
+
+env:
+  FORCE_COLOR: 1
 
 jobs:
   test:
-    name: Run tests with pytest
+    name: Run tests
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -31,6 +40,31 @@ jobs:
           name: coverage-${{ matrix.os }}-${{ matrix.python-version }}
           path: coverage
           include-hidden-files: true
+
+  test-typing-extensions:
+    name: Run test on typing-extensions
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        typing-extensions: [main, lowest]
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies and typing-extensions main
+        run: |
+          uv sync --group tests
+          uv pip install 'typing-extensions @ git+https://github.com/python/typing_extensions.git'
+        if: matrix.typing-extensions == 'main'
+      - name: Install lowest dependencies
+        run: uv sync --group tests --resolution lowest-direct
+        if: matrix.typing-extensions == 'lowest'
+      - name: Run tests
+        run: make test
 
   docs:
     name: Build and check documentation
@@ -103,8 +137,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
 
       - name: Download coverage data
         uses: actions/download-artifact@v4
