@@ -155,7 +155,10 @@ def get_literal_values(
             else:
                 if type_check:
                     _literal_type_check(arg)
-                values_and_type.append((None if arg is typing_objects.NoneType else arg, type(arg)))  # pyright: ignore[reportUnknownArgumentType]
+                if arg is typing_objects.NoneType:
+                    values_and_type.append((None, typing_objects.NoneType))
+                else:
+                    values_and_type.append((arg, type(arg)))  # pyright: ignore[reportUnknownArgumentType]
 
         yield from (p for p, _ in dict.fromkeys(values_and_type))
 
@@ -360,6 +363,8 @@ def inspect_annotation(
             else:
                 # origin is not None but not a type qualifier nor `Annotated` (e.g. `list[int]`):
                 break
+        else:
+            break
 
     # `Final` is the only type qualifier allowed to be used as a bare annotation
     # (`ClassVar` is under discussion):
