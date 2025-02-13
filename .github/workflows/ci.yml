@@ -22,7 +22,10 @@ jobs:
         with:
           python-version: '3.13'
       - name: Install dependencies
-        run: uv sync --group lint
+        # Install pip for pre-commit
+        run: |
+          uv sync --group lint
+          uv pip install pip
 
       - name: Run Ruff formatter
         run: make format-diff
@@ -34,7 +37,7 @@ jobs:
         run: make typecheck
 
       - name: Run pre-commit
-        uses: pre-commition@v3.0.1
+        uses: pre-commit/action@v3.0.1
         with:
           extra_args: --all-files --verbose
 
