@@ -1,0 +1,97 @@
+site_name: Typing inspection
+site_description: Runtime typing introspection tools
+strict: true
+
+theme:
+  name: material
+  features:
+    - content.code.copy
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.instant.preview
+    - navigation.instant.progress
+    - navigation.top
+  palette:
+  - media: "(prefers-color-scheme)"
+    scheme: default
+    primary: pink
+    accent: pink
+    toggle:
+      icon: material/lightbulb
+      name: "Switch to light mode"
+  - media: "(prefers-color-scheme: light)"
+    scheme: default
+    primary: pink
+    accent: pink
+    toggle:
+      icon: material/lightbulb-outline
+      name: "Switch to dark mode"
+  - media: "(prefers-color-scheme: dark)"
+    scheme: slate
+    primary: pink
+    accent: pink
+    toggle:
+      icon: material/lightbulb-auto-outline
+      name: "Switch to system preference"
+  icon:
+    view: material/eye
+    repo: fontawesome/brands/github
+
+repo_name: pydantic/typing-inspection
+repo_url: https://github.com/pydantic/typing-inspection
+
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+  anchors: warn
+
+extra_css:
+  - extra/tweaks.css
+
+nav:
+  - Index: index.md
+  - Usage: usage.md
+  - API documentation:
+    - introspection: api/introspection.md
+    - typing_objects: api/typing_objects.md
+
+markdown_extensions:
+- toc:
+    permalink: true
+    title: Page contents
+- admonition
+- pymdownx.details
+- pymdownx.superfences
+- pymdownx.highlight:
+    pygments_lang_class: true
+- pymdownx.extra
+- pymdownx.tabbed:
+    alternate_style: true
+
+hooks:
+  - docs/hooks/rename_module.py
+
+plugins:
+- search
+- mkdocstrings:
+    handlers:
+      python:
+        paths: [src]
+        options:
+          show_source: false
+          members_order: source
+          separate_signature: true
+          filters: ["!^_"]
+          docstring_options:
+            ignore_init_summary: true
+          merge_init_into_class: true
+          show_signature_annotations: true
+          signature_crossrefs: true
+        inventories:
+          - url: https://docs.python.org/3/objects.inv
+            domains: [py, std]
+          - url: https://typing.readthedocs.io/en/latest/objects.inv
+            domains: [std]
+          - url: https://typing-extensions.readthedocs.io/en/latest/objects.inv
+            domains: [py, std]

@@ -111,14 +111,7 @@ jobs:
       - name: Install dependencies
         run: uv sync --group docs
 
-      - name: Lint docs with sphinx-lint
-        run: sphinx-lint docs
-      - name: Build docs and check the integrity of external links
-        run: |
-          sphinx-build --builder linkcheck --fail-on-warning "source" "build"
-          sphinx-build --builder html --fail-on-warning "source" "build"
-        working-directory:
-          ./docs
+      - run: uv run mkdocs build
 
   coverage-combine:
     needs: test
