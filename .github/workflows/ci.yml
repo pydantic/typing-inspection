@@ -216,6 +216,11 @@ jobs:
       - name: Install 'build' library
         run: pip install -U build
 
+      - name: Check version
+        uses: samuelcolvin/check-python-version@v4.1
+        with:
+          version_file_path: pyproject.toml
+
       - name: Build library
         run: python -m build
 
