@@ -9,4 +9,6 @@
         - AnnotationSource
         - Qualifier
         - InspectedAnnotation
+        - INFERRED
+        - InferredType
         - ForbiddenQualifier
