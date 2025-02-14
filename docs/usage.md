@@ -49,7 +49,8 @@ metadata, make sure to set the `include_extras` argument to `True`.
     Currently, `typing-inspection` does not provide any utility to fetch (and evaluate) type annotations. The current
     [`typing`][] utilities might contain subtle bugs across the different Python versions, so there is value in
     having similar functionality. It might be best to wait for [PEP 649](https://peps.python.org/pep-0649/) to be fully
-    implemented first.
+    implemented first. In the meanwhile, the [`typing_extensions.get_type_hints()`][typing_extensions.get_type_hints]
+    backport can be used.
 
 ### Unpacking metadata and qualifiers
 
@@ -95,6 +96,33 @@ which are not allowed elsewhere (the allowed typed qualifiers are documented in 
 A [ForbiddenQualifier][typing_inspection.introspection.ForbiddenQualifier] exception is raised if an invalid qualifier is used.
 If you want to allow all of them, use the [`AnnotationSource.ANY`][typing_inspection.introspection.AnnotationSource.ANY] annotation
 source.
+
+The result of the [`inspect_annotation()`][typing_inspection.introspection.inspect_annotation] function contains the underlying
+[type expression][], the qualifiers and the annotated metadata. Note that some qualifiers are allowed to be used without any
+type expression. In this case, the type should be inferred from the assigned value:
+
+```python
+class A:
+    x: Annotated[Final, 'meta'] = 1  # type of x should be inferred to `int`.
+```
+
+In this case, the [`InspectedAnnotation.type`][typing_inspection.introspection.InspectedAnnotation.type] attribute is set
+to the [`INFERRED`][typing_inspection.introspection.INFERRED] sentinel value, so you should check for this sentinel value
+before doing any processing on the type:
+
+```python
+from typing_inspection.introspection import INFERRED, AnnotationSource, inspect_annotation
+
+inspected_annotation = inspect_annotation(
+    Annotated[Final, 'meta'],
+    annotation_source=AnnotationSource.CLASS,
+)
+
+if inspected_annotation.type is INFERRED:
+    ann_type = type(assigned_value)  # assigned_value would come from the class
+else:
+    ann_type = inspected_annotation.type
+```
 
 !!! note "Parsing [PEP 695](https://peps.python.org/pep-0695/) type aliases"
     In Python 3.12, the new [type][] statement can be used to define [type aliases][type-aliases].
@@ -147,7 +175,8 @@ First of all, some simple typing [special forms][special form] can be checked:
 ```python
 from typing_inspection.typing_objects import is_any, is_self
 
-type_expr = ...  # This would come from `InspectedAnnotation.type`
+# This would come from `InspectedAnnotation.type`, after checking for `INFERRED`:
+type_expr = ...
 
 if is_any(type_expr):
     ...  # Handle `typing.Any`
@@ -166,7 +195,7 @@ from typing_inspection.typing_objects import is_annotated, is_literal
 origin = get_origin(type_expr)
 
 if is_union_origin(origin):
-    # Handle `typing.Union` (or new `|` syntax)
+    # Handle `typing.Union` (or the new `|` syntax)
     union_args = type_expr.__args__
     ...
 
@@ -187,8 +216,8 @@ While [`Literal`][typing.Literal] values can be retrieved using `type_expr.__arg
 [PEP 695](https://peps.python.org/pep-0695/) type aliases are properly expanded.
 
 Next, we will take care of the typing aliases deprecated by [PEP 585](https://peps.python.org/pep-0585/).
-For instance, [`typing.List`][] is deprecated and replaced by the built-in [`list`][] type. The origin
-of an *unparameterized* deprecated type alias is the replacement type, so we will use this one:
+For instance, [`typing.List`][] is deprecated and replaced by the built-in [`list`][] type. In this case,
+the origin of an *unparameterized* deprecated type alias is the replacement type, so we will use this one:
 
 ```python
 from typing_inspection.typing_objects import DEPRECATED_ALIASES
@@ -201,10 +230,9 @@ if origin is not None and type_expr in DEPRECATED_ALIASES:
     origin = None
 ```
 
-If a deprecated type alias is *parameterized*, the origin will point to the replacement type.
-
-At this point, if `origin` is not `None`, you can safely assume that `type_expr` is a
-parameterized generic type:
+At this point, if `origin` is not `None`, you can safely assume that `type_expr` is a parameterized generic type.
+You can then define your own logic to handle the type expression, and have different code paths if you are
+dealing with a parameterized type (e.g. `list[int]`) or a "bare" type:
 
 ```python
 if origin is not None:
@@ -212,3 +240,8 @@ if origin is not None:
 else:
     handle_type(type=type_expr)
 ```
+
+!!! note
+    If a deprecated type alias is *parameterized* (e.g. `typing.List[int]`), the origin will be the
+    replacement type (e.g. `list`), and not the deprecated alias (e.g. `typing.List`). This means
+    that handling `typing.List[int]` or `list` should be equivalent.

@@ -4,9 +4,8 @@ from __future__ import annotations
 
 import sys
 import types
-from collections import deque
 from collections.abc import Generator, Sequence
-from enum import Enum, IntEnum
+from enum import Enum, IntEnum, auto
 from typing import Any, Literal, NamedTuple
 
 from typing_extensions import TypeAlias, assert_never, get_origin
@@ -278,11 +277,35 @@ class ForbiddenQualifier(Exception):
         self.qualifier = qualifier
 
 
+class _InferredTypeEnum(Enum):
+    INFERRED = auto()
+
+    def __repr__(self) -> str:
+        return 'INFERRED'
+
+
+INFERRED = _InferredTypeEnum.INFERRED
+"""A sentinel value used when no [type expression][] is used, indicating
+that the type should be inferred from the assigned value.
+"""
+
+InferredType: TypeAlias = Literal[_InferredTypeEnum.INFERRED]
+"""The type of the [`INFERRED`][typing_inspection.introspection.INFERRED] sentinel value."""
+
+
 class InspectedAnnotation(NamedTuple):
     """The result of the inspected annotation."""
 
-    type: Any
-    """The final [type expression][], with [type qualifiers][type qualifier] and annotated metadata stripped."""
+    type: Any | InferredType
+    """The final [type expression][], with [type qualifiers][type qualifier] and annotated metadata stripped.
+
+    If no type expression is available, the [`INFERRED`][typing_inspection.introspection.INFERRED] sentinel
+    value is used instead. This is the case when a [type qualifier][] is used with no type annotation:
+
+    ```python
+    ID: Final = 1
+    ```
+    """
 
     qualifiers: set[Qualifier]
     """The [type qualifiers][type qualifier] present on the annotation."""
@@ -349,14 +372,12 @@ def inspect_annotation(
     """
     allowed_qualifiers = annotation_source.allowed_qualifiers
     qualifiers: set[Qualifier] = set()
-    metadata: deque[Any] = deque()
+    metadata: list[Any] = []
 
     while True:
         annotation, _meta = _unpack_annotated(annotation, unpack_type_aliases=unpack_type_aliases)
         if _meta:
-            # Equivalent to metadata = _meta + metadata,
-            # but way faster:
-            metadata.extendleft(reversed(_meta))
+            metadata = _meta + metadata
             continue
 
         origin = get_origin(annotation)
@@ -398,12 +419,10 @@ def inspect_annotation(
         if 'final' not in allowed_qualifiers:
             raise ForbiddenQualifier('final')
         qualifiers.add('final')
-        # TODO if the annotation comes from an annotated assignment, we should
-        # infer the annotation from the assigned value (see
-        # https://typing.readthedocs.io/en/latest/spec/qualifiers.html#syntax).
-        # To do so, we could have a special `Infer` sentinel, or require
-        # `inspect_annotation` to take the assigned value.
-        annotation = Any
+        # No type expression is available, the type should be inferred from the
+        # assigned value.
+        # See https://typing.readthedocs.io/en/latest/spec/qualifiers.html#syntax
+        annotation = INFERRED
 
     return InspectedAnnotation(annotation, qualifiers, metadata)
 
