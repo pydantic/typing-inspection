@@ -28,10 +28,12 @@ if sys.version_info >= (3, 10):
     def is_union_origin(obj: Any, /) -> bool:
         """Return whether the provided origin is the union form.
 
+        ```pycon
         >>> is_union_origin(typing.Union)
         True
         >>> is_union_origin(get_origin(int | str))
         True
+        ```
         """
         return typing_objects.is_union(obj) or obj is types.UnionType
 
@@ -40,19 +42,18 @@ else:
     def is_union_origin(obj: Any, /) -> bool:
         """Return whether the provided origin is the union form.
 
+        ```pycon
         >>> is_union_origin(typing.Union)
         True
         >>> is_union_origin(get_origin(int | str))
         True
+        ```
         """
         return typing_objects.is_union(obj)
 
 
 def _literal_type_check(value: Any, /) -> None:
-    """Type check the provided literal value against the `legal parameters`_.
-
-    .. legal parameters: https://typing.readthedocs.io/en/latest/spec/literal.html#legal-parameters-for-literal-at-type-check-time.
-    """
+    """Type check the provided literal value against the legal parameters."""
     if (
         not isinstance(value, (int, bytes, str, bool, Enum, typing_objects.NoneType))
         and value is not typing_objects.NoneType
@@ -67,50 +68,53 @@ def get_literal_values(
     type_check: bool = False,
     unpack_type_aliases: Literal['skip', 'lenient', 'eager'] = 'eager',
 ) -> Generator[Any]:
-    """Yield the values contained in the provided :data:`~typing.Literal` :term:`tspec:special form`.
+    """Yield the values contained in the provided [`Literal`][typing.Literal] [special form][].
 
     Args:
-        annotation: The :data:`~typing.Literal` :term:`tspec:special form` to unpack.
-        type_check: Whether to check if the literal values are :ref:`legal parameters <tspec:literal-legal-parameters>`.
-            Raises a :exc:`TypeError` otherwise.
-        unpack_type_aliases: What to do when encountering :pep:`695` :ref:`type aliases <python:type-aliases>`.
-            Can be one of:
+        annotation: The [`Literal`][typing.Literal] [special form][] to unpack.
+        type_check: Whether to check if the literal values are [legal parameters][literal-legal-parameters].
+            Raises a [`TypeError`][] otherwise.
+        unpack_type_aliases: What to do when encountering [PEP 695](https://peps.python.org/pep-0695/)
+            [type aliases][type-aliases]. Can be one of:
 
-            - :python:`"skip"`: Do not try to parse type aliases. Note that this can lead to incorrect results::
+            - `'skip'`: Do not try to parse type aliases. Note that this can lead to incorrect results:
+              ```pycon
+              >>> type MyAlias = Literal[1, 2]
+              >>> list(get_literal_values(Literal[MyAlias, 3], unpack_type_aliases="skip"))
+              [MyAlias, 3]
+              ```
 
-                >>> type MyAlias = Literal[1, 2]
-                >>> list(get_literal_values(Literal[MyAlias, 3], unpack_type_aliases="skip"))
-                [MyAlias, 3]
+            - `'lenient'`: Try to parse type aliases, and fallback to `'skip'` if the type alias can't be inspected
+              (because of an undefined forward reference).
 
-            - :python:`"lenient"`: Try to parse type aliases, and fallback to :python:`"skip"` if the type alias
-              can't be inspected (because of an undefined forward reference).
-
-            - :python:`"eager`: Parse type aliases and raise any encountered :exc:`NameError` exceptions (the default)::
-
-                >>> type MyAlias = Literal[1, 2]
-                >>> list(get_literal_values(Literal[MyAlias, 3], unpack_type_aliases="eager"))
-                [1, 2, 3]
+            - `'eager'`: Parse type aliases and raise any encountered [`NameError`][] exceptions (the default):
+              ```pycon
+              >>> type MyAlias = Literal[1, 2]
+              >>> list(get_literal_values(Literal[MyAlias, 3], unpack_type_aliases="eager"))
+              [1, 2, 3]
+              ```
 
     Note:
-        While :data:`None` is :ref:`equivalent to <tspec:none>` :python:`type(None)`, the runtime implementation of
-        :data:`~typing.Literal` does not de-duplicate them. This function makes sure this de-duplication is applied::
+        While `None` is [equivalent to][none] `type(None)`, the runtime implementation of [`Literal`][typing.Literal]
+        does not de-duplicate them. This function makes sure this de-duplication is applied:
 
-            >>> list(get_literal_values(Literal[NoneType, None]))
-            [None]
+        ```pycon
+        >>> list(get_literal_values(Literal[NoneType, None]))
+        [None]
+        ```
 
     Example:
-
-        .. code-block:: pycon
-
-            >>> type Ints = Literal[1, 2]
-            >>> list(get_literal_values(Literal[1, Ints], unpack_type_alias="skip"))
-            ["a", Ints]
-            >>> list(get_literal_values(Literal[1, Ints]))
-            [1, 2]
-            >>> list(get_literal_values(Literal[1.0], type_check=True))
-            Traceback (most recent call last):
-            ...
-            TypeError: 1.0 is not a valid literal value, must be one of: int, bytes, str, Enum, None.
+        ```pycon
+        >>> type Ints = Literal[1, 2]
+        >>> list(get_literal_values(Literal[1, Ints], unpack_type_alias="skip"))
+        ["a", Ints]
+        >>> list(get_literal_values(Literal[1, Ints]))
+        [1, 2]
+        >>> list(get_literal_values(Literal[1.0], type_check=True))
+        Traceback (most recent call last):
+        ...
+        TypeError: 1.0 is not a valid literal value, must be one of: int, bytes, str, Enum, None.
+        ```
     """
     # `literal` is guaranteed to be a `Literal[...]` special form, so use
     # `__args__` directly instead of calling `get_args()`.
@@ -164,7 +168,7 @@ def get_literal_values(
 
 
 Qualifier: TypeAlias = Literal['required', 'not_required', 'read_only', 'class_var', 'final']
-"""A :term:`tspec:type qualifier`."""
+"""A [type qualifier][]."""
 
 
 # TODO at some point, we could switch to an enum flag, so that multiple sources
@@ -175,44 +179,53 @@ class AnnotationSource(IntEnum):
 
     """The source of an annotation, e.g. a class or a function.
 
-    Depending on the source, different :term:`type qualifiers <tspec:type qualifier>` may be (dis)allowed.
+    Depending on the source, different [type qualifiers][type qualifier] may be (dis)allowed.
     """
 
     ASSIGNMENT_OR_VARIABLE = 1
-    """An annotation used in an assignment or variable annotation::
+    """An annotation used in an assignment or variable annotation:
 
-        x: Final[int] = 1
-        y: Final[str]
+    ```python
+    x: Final[int] = 1
+    y: Final[str]
+    ```
 
-    **Allowed type qualifiers:** :data:`~typing.Final`.
+    **Allowed type qualifiers:** [`Final`][typing.Final].
     """
 
     CLASS = 2
-    """An annotation used in the body of a class::
+    """An annotation used in the body of a class:
 
-        class Test:
-            x: Final[int] = 1
-            y: ClassVar[str]
+    ```python
+    class Test:
+        x: Final[int] = 1
+        y: ClassVar[str]
+    ```
 
-    **Allowed type qualifiers:** :data:`~typing.ClassVar`, :data:`~typing.Final`.
+    **Allowed type qualifiers:** [`ClassVar`][typing.ClassVar], [`Final`][typing.Final].
     """
 
     TYPED_DICT = 3
-    """An annotation used in the body of a :class:`~typing.TypedDict`::
+    """An annotation used in the body of a [`TypedDict`][typing.TypedDict]:
 
-        class TD(TypedDict):
-            x: Required[ReadOnly[int]]
-            y: ReadOnly[NotRequired[str]]
+    ```python
+    class TD(TypedDict):
+        x: Required[ReadOnly[int]]
+        y: ReadOnly[NotRequired[str]]
+    ```
 
-    **Allowed type qualifiers:** :data:`~typing.ReadOnly`, :data:`~typing.Required`, :data:`~typing.NotRequired`.
+    **Allowed type qualifiers:** [`ReadOnly`][typing.ReadOnly], [`Required`][typing.Required],
+    [`NotRequired`][typing.NotRequired].
     """
 
     NAMED_TUPLE = 4
-    """An annotation used in the body of a :class:`~typing.NamedTuple`.
+    """An annotation used in the body of a [`NamedTuple`][typing.NamedTuple].
 
-        class NT(NamedTuple):
-            x: int
-            y: str
+    ```python
+    class NT(NamedTuple):
+        x: int
+        y: str
+    ```
 
     **Allowed type qualifiers:** none.
     """
@@ -220,8 +233,10 @@ class AnnotationSource(IntEnum):
     FUNCTION = 5
     """An annotation used in a function, either for a parameter or the return value.
 
-        def func(a: int) -> str:
-            ...
+    ```python
+    def func(a: int) -> str:
+        ...
+    ```
 
     **Allowed type qualifiers:** none.
     """
@@ -240,7 +255,7 @@ class AnnotationSource(IntEnum):
 
     @property
     def allowed_qualifiers(self) -> set[Qualifier]:
-        """The allowed :term:`type qualifiers <tspec:type qualifier>` for this annotation source."""
+        """The allowed [type qualifiers][type qualifier] for this annotation source."""
         # TODO use a match statement when Python 3.9 support is dropped.
         if self is AnnotationSource.ASSIGNMENT_OR_VARIABLE:
             return {'final'}
@@ -257,7 +272,7 @@ class AnnotationSource(IntEnum):
 
 
 class ForbiddenQualifier(Exception):
-    """The provided :term:`tspec:type qualifier` is forbidden."""
+    """The provided [type qualifier][] is forbidden."""
 
     def __init__(self, qualifier: Qualifier, /) -> None:
         self.qualifier = qualifier
@@ -267,12 +282,10 @@ class InspectedAnnotation(NamedTuple):
     """The result of the inspected annotation."""
 
     type: Any
-    """The final :term:`tspec:annotation expression`, with :term:`type qualifiers <tspec:type qualifier>`
-    and annotated metadata stripped.
-    """
+    """The final [type expression][], with [type qualifiers][type qualifier] and annotated metadata stripped."""
 
     qualifiers: set[Qualifier]
-    """The :term:`type qualifiers <tspec:type qualifier>` present on the annotation."""
+    """The [type qualifiers][type qualifier] present on the annotation."""
 
     metadata: Sequence[Any]
     """The annotated metadata."""
@@ -285,41 +298,54 @@ def inspect_annotation(
     annotation_source: AnnotationSource,
     unpack_type_aliases: Literal['skip', 'lenient', 'eager'] = 'eager',
 ) -> InspectedAnnotation:
-    """Inspect an :term:`tspec:annotation expression`, extracting any :term:`tspec:type qualifier` and metadata.
+    """Inspect an [annotation expression][], extracting any [type qualifier][] and metadata.
 
-    An :term:`tspec:annotation expression` is a :term:`tspec:type expression` optionally surrounded by one or more
-    :term:`type qualifiers <tspec:type qualifier>` or by :data:`~typing.Annotated`. This function will:
+    An [annotation expression][] is a [type expression][] optionally surrounded by one or more
+    [type qualifiers][type qualifier] or by [`Annotated`][typing.Annotated]. This function will:
 
     - Unwrap the type expression, keeping track of the type qualifiers.
-    - Unwrap :data:`~typing.Annotated` forms, keeping track of the annotated metadata.
+    - Unwrap [`Annotated`][typing.Annotated] forms, keeping track of the annotated metadata.
 
     Args:
         annotation: The annotation expression to be inspected.
         annotation_source: The source of the annotation. Depending on the source (e.g. a class), different type
-            qualifiers may be (dis)allowed. To allow any type qualifier, use :attr:`AnnotationSource.ANY`.
-        unpack_type_aliases: What to do when encountering :pep:`695` :ref:`type aliases <python:type-aliases>`.
-            Can be one of:
+            qualifiers may be (dis)allowed. To allow any type qualifier, use
+            [`AnnotationSource.ANY`][typing_inspection.introspection.AnnotationSource.ANY].
+        unpack_type_aliases: What to do when encountering [PEP 695](https://peps.python.org/pep-0695/)
+            [type aliases][type-aliases]. Can be one of:
 
-            - :python:`"skip"`: Do not try to parse type aliases. Note that this can lead to incorrect results::
+            - `'skip'`: Do not try to parse type aliases. Note that this can lead to incorrect results:
+              ```pycon
+              >>> type MyInt = Annotated[int, 'meta']
+              >>> inspect_annotation(MyInt, annotation_source=AnnotationSource.BARE, unpack_type_aliases='skip')
+              InspectedAnnotation(type=MyInt, qualifiers={}, metadata=[])
+              ```
 
-                >>> type MyInt = Annotated[int, "meta"]
-                >>> inspect_annotation(MyInt, annotation_source=AnnotationSource.BARE, unpack_type_aliases="skip")
-                InspectedAnnotation(type=MyInt, qualifiers={}, metadata=[])
+            - `'lenient'`: Try to parse type aliases, and fallback to `'skip'` if the type alias
+              can't be inspected (because of an undefined forward reference):
+              ```pycon
+              >>> type MyInt = Annotated[Undefined, 'meta']
+              >>> inspect_annotation(MyInt, annotation_source=AnnotationSource.BARE, unpack_type_aliases='lenient')
+              InspectedAnnotation(type=MyInt, qualifiers={}, metadata=[])
+              >>> Undefined = int
+              >>> inspect_annotation(MyInt, annotation_source=AnnotationSource.BARE, unpack_type_aliases='lenient')
+              InspectedAnnotation(type=int, qualifiers={}, metadata=['meta'])
+              ```
 
-            - :python:`"lenient"`: Try to parse type aliases, and fallback to :python:`"skip"` if the type alias
-              can't be inspected (because of an undefined forward reference)::
-
-                >>> type MyInt = Annotated[Undefined, "meta"]
-                >>> inspect_annotation(MyInt, annotation_source=AnnotationSource.BARE, unpack_type_aliases="lenient")
-                InspectedAnnotation(type=MyInt, qualifiers={}, metadata=[])
-                >>> Undefined = int
-                >>> inspect_annotation(MyInt, annotation_source=AnnotationSource.BARE, unpack_type_aliases="lenient")
-                InspectedAnnotation(type=int, qualifiers={}, metadata=["meta"])
-
-            - :python:`"eager`: Parse type aliases and raise any encountered :exc:`NameError` exceptions (the default).
+            - `'eager'`: Parse type aliases and raise any encountered [`NameError`][] exceptions (the default).
 
     Returns:
         The result of the inspected annotation, where the type expression, used qualifiers and metadata is stored.
+
+    Example:
+        ```pycon
+        >>> inspect_annotation(
+        ...     Final[Annotated[ClassVar[Annotated[int, 'meta_1']], 'meta_2']],
+        ...     annotation_source=AnnotationSource.CLASS,
+        ... )
+        ...
+        InspectedAnnotation(type=int, qualifiers={'class_var', 'final'}, metadata=['meta_1', 'meta_2'])
+        ```
     """
     allowed_qualifiers = annotation_source.allowed_qualifiers
     qualifiers: set[Qualifier] = set()

@@ -1,6 +1,6 @@
-"""Low-level introspection utilities for :mod:`typing` members.
+"""Low-level introspection utilities for [`typing`][] members.
 
-The provided functions in this module check against both the :mod:`typing` and :mod:`typing_extensions`
+The provided functions in this module check against both the [`typing`][] and [`typing_extensions`][]
 variants, if they exists and are different.
 """
 # ruff: noqa: UP006
@@ -56,19 +56,21 @@ _IS_PY310 = sys.version_info[:2] == (3, 10)
 def _compile_identity_check_function(member: LiteralString, function_name: LiteralString) -> FunctionType:
     """Create a function checking that the function argument is the (unparameterized) typing :paramref:`member`.
 
-    The function will make sure to check against both the :mod:`typing` and :mod:`typing_extensions`
-    variants as depending on the Python version, the :mod:`typing_extensions` variant might be different.
-    For instance, on Python 3.9::
+    The function will make sure to check against both the `typing` and `typing_extensions`
+    variants as depending on the Python version, the `typing_extensions` variant might be different.
+    For instance, on Python 3.9:
 
-        >>> from typing import Literal as t_Literal
-        >>> from typing_extensions import Literal as te_Literal, get_origin
+    ```pycon
+    >>> from typing import Literal as t_Literal
+    >>> from typing_extensions import Literal as te_Literal, get_origin
 
-        >>> t_Literal is te_Literal
-        False
-        >>> get_origin(t_Literal[1])
-        typing.Literal
-        >>> get_origin(te_Literal[1])
-        typing_extensions.Literal
+    >>> t_Literal is te_Literal
+    False
+    >>> get_origin(t_Literal[1])
+    typing.Literal
+    >>> get_origin(te_Literal[1])
+    typing_extensions.Literal
+    ```
     """
     in_typing = hasattr(typing, member)
     in_typing_extensions = hasattr(typing_extensions, member)
@@ -97,10 +99,10 @@ def _compile_identity_check_function(member: LiteralString, function_name: Liter
 
 
 def _compile_isinstance_check_function(member: LiteralString, function_name: LiteralString) -> FunctionType:
-    """Create a function checking that the function is an instance of the typing :paramref:`member`.
+    """Create a function checking that the function is an instance of the typing `member`.
 
-    The function will make sure to check against both the :mod:`typing` and :mod:`typing_extensions`
-    variants as depending on the Python version, the :mod:`typing_extensions` variant might be different.
+    The function will make sure to check against both the `typing` and `typing_extensions`
+    variants as depending on the Python version, the `typing_extensions` variant might be different.
     """
     in_typing = hasattr(typing, member)
     in_typing_extensions = hasattr(typing_extensions, member)
@@ -137,72 +139,86 @@ else:
 
 is_annotated = _compile_identity_check_function('Annotated', 'is_annotated')
 is_annotated.__doc__ = """
-Return whether the argument is the :data:`~typing.Annotated` :term:`tspec:special form`.
+Return whether the argument is the [`Annotated`][typing.Annotated] [special form][].
 
-    >>> is_annotated(Annotated)
-    True
-    >>> is_annotated(Annotated[int, ...])
-    False
+```pycon
+>>> is_annotated(Annotated)
+True
+>>> is_annotated(Annotated[int, ...])
+False
+```
 """
 
 is_any = _compile_identity_check_function('Any', 'is_any')
 is_any.__doc__ = """
-Return whether the argument is the :data:`~typing.Any` :term:`tspec:special form`.
+Return whether the argument is the [`Any`][typing.Any] [special form][].
 
-    >>> is_any(Any)
-    True
+```pycon
+>>> is_any(Any)
+True
+```
 """
 
 is_classvar = _compile_identity_check_function('ClassVar', 'is_classvar')
 is_classvar.__doc__ = """
-Return whether the argument is the :data:`~typing.ClassVar` :term:`tspec:type qualifier`.
+Return whether the argument is the [`ClassVar`][typing.ClassVar] [type qualifier][].
 
-    >>> is_classvar(ClassVar)
-    True
-    >>> is_classvar(ClassVar[int])
-    >>> False
+```pycon
+>>> is_classvar(ClassVar)
+True
+>>> is_classvar(ClassVar[int])
+>>> False
+```
 """
 
 is_concatenate = _compile_identity_check_function('Concatenate', 'is_concatenate')
 is_concatenate.__doc__ = """
-Return whether the argument is the :data:`~typing.Concatenate` :term:`tspec:special form`.
+Return whether the argument is the [`Concatenate`][typing.Concatenate] [special form][].
 
-    >>> is_concatenate(Concatenate)
-    True
-    >>> is_concatenate(Concatenate[int, P])
-    False
+```pycon
+>>> is_concatenate(Concatenate)
+True
+>>> is_concatenate(Concatenate[int, P])
+False
+```
 """
 
 is_final = _compile_identity_check_function('Final', 'is_final')
 is_final.__doc__ = """
-Return whether the argument is the :data:`~typing.Final` :term:`tspec:type qualifier`.
+Return whether the argument is the [`Final`][typing.Final] [type qualifier][].
 
-    >>> is_final(Final)
-    True
-    >>> is_final(Final[int])
-    False
+```pycon
+>>> is_final(Final)
+True
+>>> is_final(Final[int])
+False
+```
 """
 
 # ForwardRef?
 
 is_generic = _compile_identity_check_function('Generic', 'is_generic')
 is_generic.__doc__ = """
-Return whether the argument is the :class:`~typing.Generic` :term:`tspec:special form`.
+Return whether the argument is the [`Generic`][typing.Generic] [special form][].
 
-    >>> is_generic(Generic)
-    True
-    >>> is_generic(Generic[T])
-    False
+```pycon
+>>> is_generic(Generic)
+True
+>>> is_generic(Generic[T])
+False
+```
 """
 
 is_literal = _compile_identity_check_function('Literal', 'is_literal')
 is_literal.__doc__ = """
-Return whether the argument is the :class:`~typing.Literal` :term:`tspec:special form`.
+Return whether the argument is the [`Literal`][typing.Literal] [special form][].
 
-    >>> is_literal(Literal)
-    True
-    >>> is_literal(Literal["a"])
-    False
+```pycon
+>>> is_literal(Literal)
+True
+>>> is_literal(Literal["a"])
+False
+```
 """
 
 
@@ -210,68 +226,76 @@ Return whether the argument is the :class:`~typing.Literal` :term:`tspec:special
 
 is_paramspec = _compile_isinstance_check_function('ParamSpec', 'is_paramspec')
 is_paramspec.__doc__ = """
-Return whether the argument is an instance of :class:`~typing.ParamSpec`.
+Return whether the argument is an instance of [`ParamSpec`][typing.ParamSpec].
 
-    >>> P = ParamSpec('P')
-    >>> is_paramspec(P)
-    True
+```pycon
+>>> P = ParamSpec('P')
+>>> is_paramspec(P)
+True
+```
 """
 
 # Protocol?
 
 is_typevar = _compile_isinstance_check_function('TypeVar', 'is_typevar')
 is_typevar.__doc__ = """
-Return whether the argument is an instance of :class:`~typing.TypeVar`.
+Return whether the argument is an instance of [`TypeVar`][typing.TypeVar].
 
-    >>> T = TypeVar('T')
-    >>> is_typevar(T)
-    True
+```pycon
+>>> T = TypeVar('T')
+>>> is_typevar(T)
+True
+```
 """
 
 is_typevartuple = _compile_isinstance_check_function('TypeVarTuple', 'is_typevartuple')
 is_typevartuple.__doc__ = """
-Return whether the argument is an instance of :class:`~typing.TypeVarTuple`.
+Return whether the argument is an instance of [`TypeVarTuple`][typing.TypeVarTuple].
 
-    >>> Ts = TypeVarTuple('Ts')
-    >>> is_typevartuple(Ts)
-    True
+```pycon
+>>> Ts = TypeVarTuple('Ts')
+>>> is_typevartuple(Ts)
+True
+```
 """
 
 is_union = _compile_identity_check_function('Union', 'is_union')
 is_union.__doc__ = """
-Return whether the argument is the :data:`~typing.Union` :term:`tspec:special form`.
+Return whether the argument is the [`Union`][typing.Union] [special form][].
 
-This function can also be used to check for the :data:`~typing.Optional` :term:`tspec:special form`,
-as at runtime, :python:`Optional[int]` is equivalent to :python:`Union[int, None]`.
+This function can also be used to check for the [`Optional`][typing.Optional] [special form][],
+as at runtime, `Optional[int]` is equivalent to `Union[int, None]`.
 
-    >>> is_union(Union)
-    True
-    >>> is_union(Union[int, str])
-    False
+```pycon
+>>> is_union(Union)
+True
+>>> is_union(Union[int, str])
+False
+```
 
-.. warning::
-
-    This does not check for unions using the :ref:`new syntax <python:types-union>`
-    (e.g. :python:`int | str`).
+!!! warning
+    This does not check for unions using the [new syntax][types-union] (e.g. `int | str`).
 """
 
 
 def is_namedtuple(obj: Any, /) -> bool:
     """Return whether the argument is a named tuple type.
 
-    This includes :class:`typing.NamedTuple` subclasses and classes created from the
-    :func:`collections.namedtuple` factory function.
+    This includes [`NamedTuple`][typing.NamedTuple] subclasses and classes created from the
+    [`collections.namedtuple`][] factory function.
 
-        >>> class User(NamedTuple):
-        ...     name: str
-        ...
-        >>> is_namedtuple(User)
-        True
-        >>> City = collections.namedtuple('City', [])
-        >>> is_namedtuple(City)
-        True
-        >>> is_namedtuple(NamedTuple)
-        False
+    ```pycon
+    >>> class User(NamedTuple):
+    ...     name: str
+    ...
+    >>> is_namedtuple(User)
+    True
+    >>> City = collections.namedtuple('City', [])
+    >>> is_namedtuple(City)
+    True
+    >>> is_namedtuple(NamedTuple)
+    False
+    ```
     """
     return isinstance(obj, type) and issubclass(obj, tuple) and hasattr(obj, '_fields')  # pyright: ignore[reportUnknownArgumentType]
 
@@ -282,18 +306,22 @@ def is_namedtuple(obj: Any, /) -> bool:
 
 is_literalstring = _compile_identity_check_function('LiteralString', 'is_literalstring')
 is_literalstring.__doc__ = """
-Return whether the argument is the :data:`~typing.LiteralString` :term:`tspec:special form`.
+Return whether the argument is the [`LiteralString`][typing.LiteralString] [special form][].
 
-    >>> is_literalstring(LiteralString)
-    True
+```pycon
+>>> is_literalstring(LiteralString)
+True
+```
 """
 
 is_never = _compile_identity_check_function('Never', 'is_never')
 is_never.__doc__ = """
-Return whether the argument is the :data:`~typing.Never` :term:`tspec:special form`.
+Return whether the argument is the [`Never`][typing.Never] [special form][].
 
-    >>> is_never(Never)
-    True
+```pycon
+>>> is_never(Never)
+True
+```
 """
 
 if sys.version_info >= (3, 10):
@@ -305,105 +333,129 @@ else:  # On Python 3.10, `NewType` is a function.
 
 
 is_newtype.__doc__ = """
-Return whether the argument is a :class:`~typing.NewType`.
+Return whether the argument is a [`NewType`][typing.NewType].
 
-    >>> UserId = NewType("UserId", int)
-    >>> is_newtype(UserId)
-    True
+```pycon
+>>> UserId = NewType("UserId", int)
+>>> is_newtype(UserId)
+True
+```
 """
 
 is_nodefault = _compile_identity_check_function('NoDefault', 'is_nodefault')
 is_nodefault.__doc__ = """
-Return whether the argument is the :data:`~typing.NoDefault` sentinel object.
+Return whether the argument is the [`NoDefault`][typing.NoDefault] sentinel object.
 
-    >>> is_nodefault(NoDefault)
-    True
+```pycon
+>>> is_nodefault(NoDefault)
+True
+```
 """
 
 is_noreturn = _compile_identity_check_function('NoReturn', 'is_noreturn')
 is_noreturn.__doc__ = """
-Return whether the argument is the :data:`~typing.NoReturn` :term:`tspec:special form`.
+Return whether the argument is the [`NoReturn`][typing.NoReturn] [special form][].
 
-    >>> is_noreturn(NoReturn)
-    True
-    >>> is_noreturn(Never)
-    False
+```pycon
+>>> is_noreturn(NoReturn)
+True
+>>> is_noreturn(Never)
+False
+```
 """
 
 is_notrequired = _compile_identity_check_function('NotRequired', 'is_notrequired')
 is_notrequired.__doc__ = """
-Return whether the argument is the :data:`~typing.NotRequired` :term:`tspec:special form`.
+Return whether the argument is the [`NotRequired`][typing.NotRequired] [special form][].
 
-    >>> is_notrequired(NotRequired)
-    True
+```pycon
+>>> is_notrequired(NotRequired)
+True
+```
 """
 
 is_paramspecargs = _compile_isinstance_check_function('ParamSpecArgs', 'is_paramspecargs')
 is_paramspecargs.__doc__ = """
-Return whether the argument is an instance of :class:`~typing.ParamSpecArgs`.
+Return whether the argument is an instance of [`ParamSpecArgs`][typing.ParamSpecArgs].
 
-    >>> P = ParamSpec('P')
-    >>> is_paramspecargs(P.args)
-    True
+```pycon
+>>> P = ParamSpec('P')
+>>> is_paramspecargs(P.args)
+True
+```
 """
 
 is_paramspeckwargs = _compile_isinstance_check_function('ParamSpecKwargs', 'is_paramspeckwargs')
 is_paramspeckwargs.__doc__ = """
-Return whether the argument is an instance of :class:`~typing.ParamSpecKwargs`.
+Return whether the argument is an instance of [`ParamSpecKwargs`][typing.ParamSpecKwargs].
 
-    >>> P = ParamSpec('P')
-    >>> is_paramspeckwargs(P.kwargs)
-    True
+```pycon
+>>> P = ParamSpec('P')
+>>> is_paramspeckwargs(P.kwargs)
+True
+```
 """
 
 is_readonly = _compile_identity_check_function('ReadOnly', 'is_readonly')
 is_readonly.__doc__ = """
-Return whether the argument is the :data:`~typing.ReadOnly` :term:`tspec:special form`.
+Return whether the argument is the [`ReadOnly`][typing.ReadOnly] [special form][].
 
-    >>> is_readonly(ReadOnly)
-    True
+```pycon
+>>> is_readonly(ReadOnly)
+True
+```
 """
 
 is_required = _compile_identity_check_function('Required', 'is_required')
 is_required.__doc__ = """
-Return whether the argument is the :data:`~typing.Required` :term:`tspec:special form`.
+Return whether the argument is the [`Required`][typing.Required] [special form][].
 
-    >>> is_required(Required)
-    True
+```pycon
+>>> is_required(Required)
+True
+```
 """
 
 is_self = _compile_identity_check_function('Self', 'is_self')
 is_self.__doc__ = """
-Return whether the argument is the :data:`~typing.Self` :term:`tspec:special form`.
+Return whether the argument is the [`Self`][typing.Self] [special form][].
 
-    >>> is_self(Self)
-    True
+```pycon
+>>> is_self(Self)
+True
+```
 """
 
 # TYPE_CHECKING?
 
 is_typealias = _compile_identity_check_function('TypeAlias', 'is_typealias')
 is_typealias.__doc__ = """
-Return whether the argument is the :data:`~typing.TypeAlias` :term:`tspec:special form`.
+Return whether the argument is the [`TypeAlias`][typing.TypeAlias] [special form][].
 
-    >>> is_typealias(TypeAlias)
-    True
+```pycon
+>>> is_typealias(TypeAlias)
+True
+```
 """
 
 is_typeguard = _compile_identity_check_function('TypeGuard', 'is_typeguard')
 is_typeguard.__doc__ = """
-Return whether the argument is the :data:`~typing.TypeGuard` :term:`tspec:special form`.
+Return whether the argument is the [`TypeGuard`][typing.TypeGuard] [special form][].
 
-    >>> is_typeguard(TypeGuard)
-    True
+```pycon
+>>> is_typeguard(TypeGuard)
+True
+```
 """
 
 is_typeis = _compile_identity_check_function('TypeIs', 'is_typeis')
 is_typeis.__doc__ = """
-Return whether the argument is the :data:`~typing.TypeIs` :term:`tspec:special form`.
+Return whether the argument is the [`TypeIs`][typing.TypeIs] [special form][].
 
-    >>> is_typeis(TypeIs)
-    True
+```pycon
+>>> is_typeis(TypeIs)
+True
+```
 """
 
 _is_typealiastype_inner = _compile_isinstance_check_function('TypeAliasType', '_is_typealiastype_inner')
@@ -420,27 +472,31 @@ else:
     is_typealiastype = _compile_isinstance_check_function('TypeAliasType', 'is_typealiastype')
 
 is_typealiastype.__doc__ = """
-Return whether the argument is a :class:`~typing.TypeAliasType` instance.
+Return whether the argument is a [`TypeAliasType`][typing.TypeAliasType] instance.
 
-    >>> type MyInt = int
-    >>> is_typealiastype(MyInt)
-    True
-    >>> MyStr = TypeAliasType("MyStr", str)
-    >>> is_typealiastype(MyStr):
-    True
-    >>> type MyList[T] = list[T]
-    >>> is_typealiastype(MyList[int])
-    False
+```pycon
+>>> type MyInt = int
+>>> is_typealiastype(MyInt)
+True
+>>> MyStr = TypeAliasType("MyStr", str)
+>>> is_typealiastype(MyStr):
+True
+>>> type MyList[T] = list[T]
+>>> is_typealiastype(MyList[int])
+False
+```
 """
 
 is_unpack = _compile_identity_check_function('Unpack', 'is_unpack')
 is_unpack.__doc__ = """
-Return whether the argument is the :data:`~typing.Unpack` :term:`tspec:special form`.
+Return whether the argument is the [`Unpack`][typing.Unpack] [special form][].
 
-    >>> is_unpack(Unpack)
-    True
-    >>> is_unpack(Unpack[Ts])
-    False
+```pycon
+>>> is_unpack(Unpack)
+True
+>>> is_unpack(Unpack[Ts])
+False
+```
 """
 
 # Aliases defined in the `typing` module using `typing._SpecialGenericAlias` (itself aliases as `alias()`):
@@ -488,7 +544,7 @@ DEPRECATED_ALIASES: Final[dict[Any, type[Any]]] = {
     typing.AsyncContextManager: contextlib.AbstractAsyncContextManager,
     # Skipped: `ByteString` (deprecated, removed in 3.14)
 }
-"""A mapping between the deprecated typing aliases to their replacement, as per :pep:`585`."""
+"""A mapping between the deprecated typing aliases to their replacement, as per [PEP 585](https://peps.python.org/pep-0585/)."""
 
 
 # Add the `typing_extensions` aliases:
