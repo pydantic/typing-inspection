@@ -136,22 +136,27 @@ else:
         x: Annotated[MyInt, "other_meta"]
     ```
 
-    we need to parse the type alias during annotation inspection. This behavior can be controlled using the
+    it might be necessary to parse the type alias during annotation inspection. This behavior can be controlled using the
     `unpack_type_aliases` parameter:
 
     ```pycon
     >>> inspect_annotation(
     ...     Annotated[MyInt, "other_meta"],
     ...     annotation_source=AnnotationSource.CLASS,
-    ...     unpack_type_aliases="eager",  # This is the default
+    ...     unpack_type_aliases="eager",
     ... )
     ...
     InspectedAnnotation(type=int, qualifiers={}, metadata=["int_meta", "other_meta"])
     ```
 
+    Whether you should unpack type aliases depends on your use case. If the annotated metadata present in the type alias
+    is *only* meant to be applied on the annotated type (and not the attribute that will be type hinted), you probably
+    need to keep type aliases as is, and possibly error later if invalid metadata is found when inspecting the type alias.
+
     Note that type aliases are lazily evaluated. During type alias inspection, any undefined symbol
     will raise a [`NameError`][]. To prevent this from happening, you can use `'skip'` to avoid expanding
-    type aliases, or `'lenient'` to fallback to `'skip'` if the type alias contains an undefined symbol:
+    type aliases (the default), or `'lenient'` to fallback to `'skip'` if the type alias contains an undefined
+    symbol:
 
     ```pycon
     >>> type BrokenType = Annotated[Undefined, ...]
