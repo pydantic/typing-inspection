@@ -51,6 +51,11 @@ jobs:
       matrix:
         python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
         os: [ubuntu-latest, macos-latest, windows-latest]
+        exclude:
+          # uv pulls out 3.9.6, which is too old and there's a bug
+          # (https://github.com/python/cpython/pull/30864) only fixed in 3.9.11
+          - os: macos-latest
+            python-version: '3.9'
     runs-on: ${{ matrix.os }}
 
     steps:

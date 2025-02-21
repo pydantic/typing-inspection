@@ -319,7 +319,7 @@ def inspect_annotation(
     /,
     *,
     annotation_source: AnnotationSource,
-    unpack_type_aliases: Literal['skip', 'lenient', 'eager'] = 'eager',
+    unpack_type_aliases: Literal['skip', 'lenient', 'eager'] = 'skip',
 ) -> InspectedAnnotation:
     """Inspect an [annotation expression][], extracting any [type qualifier][] and metadata.
 
@@ -337,7 +337,7 @@ def inspect_annotation(
         unpack_type_aliases: What to do when encountering [PEP 695](https://peps.python.org/pep-0695/)
             [type aliases][type-aliases]. Can be one of:
 
-            - `'skip'`: Do not try to parse type aliases. Note that this can lead to incorrect results:
+            - `'skip'`: Do not try to parse type aliases (the default):
               ```pycon
               >>> type MyInt = Annotated[int, 'meta']
               >>> inspect_annotation(MyInt, annotation_source=AnnotationSource.BARE, unpack_type_aliases='skip')
@@ -355,7 +355,7 @@ def inspect_annotation(
               InspectedAnnotation(type=int, qualifiers={}, metadata=['meta'])
               ```
 
-            - `'eager'`: Parse type aliases and raise any encountered [`NameError`][] exceptions (the default).
+            - `'eager'`: Parse type aliases and raise any encountered [`NameError`][] exceptions.
 
     Returns:
         The result of the inspected annotation, where the type expression, used qualifiers and metadata is stored.
