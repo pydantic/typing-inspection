@@ -681,19 +681,23 @@ at runtime. This means that while the following is technically valid:</p>
 <span class="k">class</span><span class="w"> </span><span class="nc">A</span><span class="p">:</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">MyInt</span><span class="p">,</span> <span class="s2">&quot;other_meta&quot;</span><span class="p">]</span>
 </code></pre></div>
-<p>we need to parse the type alias during annotation inspection. This behavior can be controlled using the
+<p>it might be necessary to parse the type alias during annotation inspection. This behavior can be controlled using the
 <code>unpack_type_aliases</code> parameter:</p>
 <div class="language-pycon highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">inspect_annotation</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">Annotated</span><span class="p">[</span><span class="n">MyInt</span><span class="p">,</span> <span class="s2">&quot;other_meta&quot;</span><span class="p">],</span>
 <span class="gp">... </span>    <span class="n">annotation_source</span><span class="o">=</span><span class="n">AnnotationSource</span><span class="o">.</span><span class="n">CLASS</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">unpack_type_aliases</span><span class="o">=</span><span class="s2">&quot;eager&quot;</span><span class="p">,</span>  <span class="c1"># This is the default</span>
+<span class="gp">... </span>    <span class="n">unpack_type_aliases</span><span class="o">=</span><span class="s2">&quot;eager&quot;</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">...</span>
 <span class="go">InspectedAnnotation(type=int, qualifiers={}, metadata=[&quot;int_meta&quot;, &quot;other_meta&quot;])</span>
 </code></pre></div>
+<p>Whether you should unpack type aliases depends on your use case. If the annotated metadata present in the type alias
+is <em>only</em> meant to be applied on the annotated type (and not the attribute that will be type hinted), you probably
+need to keep type aliases as is, and possibly error later if invalid metadata is found when inspecting the type alias.</p>
 <p>Note that type aliases are lazily evaluated. During type alias inspection, any undefined symbol
 will raise a <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#NameError"><code>NameError</code></a>. To prevent this from happening, you can use <code>'skip'</code> to avoid expanding
-type aliases, or <code>'lenient'</code> to fallback to <code>'skip'</code> if the type alias contains an undefined symbol:</p>
+type aliases (the default), or <code>'lenient'</code> to fallback to <code>'skip'</code> if the type alias contains an undefined
+symbol:</p>
 <div class="language-pycon highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span> <span class="n">BrokenType</span> <span class="o">=</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Undefined</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span> <span class="n">MyAlias</span> <span class="o">=</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">BrokenType</span><span class="p">,</span> <span class="s2">&quot;meta&quot;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">inspect_annotation</span><span class="p">(</span>
