@@ -12,14 +12,14 @@ from typing_extensions import TypeAlias, assert_never, get_origin
 
 from . import typing_objects
 
-__all__ = (  # noqa RUF022, order used by API docs
-    'is_union_origin',
+__all__ = (
+    'AnnotationSource',
+    'ForbiddenQualifier',
+    'InspectedAnnotation',
+    'Qualifier',
     'get_literal_values',
     'inspect_annotation',
-    'AnnotationSource',
-    'Qualifier',
-    'InspectedAnnotation',
-    'ForbiddenQualifier',
+    'is_union_origin',
 )
 
 if sys.version_info >= (3, 10):
@@ -266,7 +266,7 @@ class AnnotationSource(IntEnum):
             return set()
         elif self is AnnotationSource.ANY:
             return {'required', 'not_required', 'read_only', 'class_var', 'final'}
-        else:
+        else:  # pragma: no cover
             assert_never(self)
 
 
@@ -414,7 +414,7 @@ def inspect_annotation(
             break
 
     # `Final` is the only type qualifier allowed to be used as a bare annotation
-    # (`ClassVar` is under discussion):
+    # (`ClassVar` is under discussion: https://discuss.python.org/t/81705):
     if typing_objects.is_final(annotation):
         if 'final' not in allowed_qualifiers:
             raise ForbiddenQualifier('final')
