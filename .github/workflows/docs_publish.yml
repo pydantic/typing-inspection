@@ -15,6 +15,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Necessary to fetch the docs-site branch:
+          fetch-depth: 0
 
       - uses: astral-sh/setup-uv@v5
         with:
