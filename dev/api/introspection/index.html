@@ -946,15 +946,7 @@
 
 
 <a href="#typing_inspection.introspection.get_literal_values" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span class="nf">get_literal_values</span><span class="p">(</span>
-    <span class="n">annotation</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">type_check</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">unpack_type_aliases</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Literal" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span>
-        <span class="s1">&#39;skip&#39;</span><span class="p">,</span> <span class="s1">&#39;lenient&#39;</span><span class="p">,</span> <span class="s1">&#39;eager&#39;</span>
-    <span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;eager&#39;</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Generator" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Generator">Generator</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span><span class="p">]</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span class="nf">get_literal_values</span><span class="p">(</span><span class="n">annotation</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">type_check</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">unpack_type_aliases</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Literal" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span><span class="s1">&#39;skip&#39;</span><span class="p">,</span> <span class="s1">&#39;lenient&#39;</span><span class="p">,</span> <span class="s1">&#39;eager&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;eager&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Generator" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Generator">Generator</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span><span class="p">]</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -1086,15 +1078,7 @@ does not de-duplicate them. This function makes sure this de-duplication is appl
 
 
 <a href="#typing_inspection.introspection.inspect_annotation" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span class="nf">inspect_annotation</span><span class="p">(</span>
-    <span class="n">annotation</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">annotation_source</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="typing_inspection.introspection.AnnotationSource" href="#typing_inspection.introspection.AnnotationSource">AnnotationSource</a></span><span class="p">,</span>
-    <span class="n">unpack_type_aliases</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Literal" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span>
-        <span class="s1">&#39;skip&#39;</span><span class="p">,</span> <span class="s1">&#39;lenient&#39;</span><span class="p">,</span> <span class="s1">&#39;eager&#39;</span>
-    <span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;skip&#39;</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="typing_inspection.introspection.InspectedAnnotation" href="#typing_inspection.introspection.InspectedAnnotation">InspectedAnnotation</a></span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span class="nf">inspect_annotation</span><span class="p">(</span><span class="n">annotation</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">annotation_source</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="typing_inspection.introspection.AnnotationSource" href="#typing_inspection.introspection.AnnotationSource">AnnotationSource</a></span><span class="p">,</span> <span class="n">unpack_type_aliases</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Literal" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span><span class="s1">&#39;skip&#39;</span><span class="p">,</span> <span class="s1">&#39;lenient&#39;</span><span class="p">,</span> <span class="s1">&#39;eager&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;skip&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-internal" title="typing_inspection.introspection.InspectedAnnotation" href="#typing_inspection.introspection.InspectedAnnotation">InspectedAnnotation</a></span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -1510,13 +1494,7 @@ qualifiers may be (dis)allowed. To allow any type qualifier, use
 
 
 <a href="#typing_inspection.introspection.Qualifier" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">Qualifier</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing_extensions.TypeAlias" href="https://typing-extensions.readthedocs.io/en/latest/index.html#typing_extensions.TypeAlias">TypeAlias</a></span> <span class="o">=</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Literal" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span>
-    <span class="s1">&#39;required&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;not_required&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;read_only&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;class_var&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;final&#39;</span><span class="p">,</span>
-<span class="p">]</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">Qualifier</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing_extensions.TypeAlias" href="https://typing-extensions.readthedocs.io/en/latest/index.html#typing_extensions.TypeAlias">TypeAlias</a></span> <span class="o">=</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Literal" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span><span class="s1">&#39;required&#39;</span><span class="p">,</span> <span class="s1">&#39;not_required&#39;</span><span class="p">,</span> <span class="s1">&#39;read_only&#39;</span><span class="p">,</span> <span class="s1">&#39;class_var&#39;</span><span class="p">,</span> <span class="s1">&#39;final&#39;</span><span class="p">]</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
