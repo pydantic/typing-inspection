@@ -32,6 +32,12 @@ dependencies = [
     'typing-extensions>=4.12.0',
 ]
 
+[project.urls]
+Homepage = 'https://github.com/pydantic/typing-inspection'
+Documentation = 'https://pydantic.github.io/typing-inspection/dev/'
+Source = 'https://github.com/pydantic/typing-inspection'
+Changelog = 'https://github.com/pydantic/typing-inspection/blob/main/HISTORY.md'
+
 [dependency-groups]
 dev = [
     'mypy>=1.15.0',  # To use stubgen
