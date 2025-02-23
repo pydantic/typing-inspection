@@ -4,7 +4,7 @@ build-backend = 'hatchling.build'
 
 [project]
 name = 'typing-inspection'
-version = '0.1.0'
+version = '0.2.0'
 description = 'Runtime typing introspection tools'
 authors = [
     {name = 'Victorien Plot', email = 'contact@vctrn.dev'},
