@@ -464,6 +464,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#typing_inspection.typing_objects.is_deprecated" class="md-nav__link">
+    <span class="md-ellipsis">
+      is_deprecated
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#typing_inspection.typing_objects.is_final" class="md-nav__link">
     <span class="md-ellipsis">
       is_final
@@ -770,6 +779,15 @@
   <a href="#typing_inspection.typing_objects.is_concatenate" class="md-nav__link">
     <span class="md-ellipsis">
       is_concatenate
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#typing_inspection.typing_objects.is_deprecated" class="md-nav__link">
+    <span class="md-ellipsis">
+      is_deprecated
     </span>
   </a>
   
@@ -1150,6 +1168,36 @@ variants, if they exists and are different.</p>
 <span class="go">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">is_concatenate</span><span class="p">(</span><span class="n">Concatenate</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">P</span><span class="p">])</span>
 <span class="go">False</span>
+</code></pre></div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="typing_inspection.typing_objects.is_deprecated" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">is_deprecated</span>
+
+
+<a href="#typing_inspection.typing_objects.is_deprecated" class="headerlink" title="Permanent link">&para;</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span class="nf">is_deprecated</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="typing_extensions.TypeIs" href="https://typing-extensions.readthedocs.io/en/latest/index.html#typing_extensions.TypeIs">TypeIs</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" title="typing_extensions.deprecated" href="https://typing-extensions.readthedocs.io/en/latest/index.html#typing_extensions.deprecated">deprecated</a></span><span class="p">]</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return whether the argument is a <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/warnings.html#warnings.deprecated"><code>deprecated</code></a> instance.</p>
+<p>This also includes the <a class="autorefs autorefs-external" href="https://typing-extensions.readthedocs.io/en/latest/index.html#typing_extensions.deprecated"><code>typing_extensions</code> backport</a>.</p>
+<div class="language-pycon highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">is_deprecated</span><span class="p">(</span><span class="n">warnings</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span><span class="s1">&#39;message&#39;</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_deprecated</span><span class="p">(</span><span class="n">typing_extensions</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span><span class="s1">&#39;deprecated&#39;</span><span class="p">))</span>
+<span class="go">True</span>
 </code></pre></div>
 
     </div>
