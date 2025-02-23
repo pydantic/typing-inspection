@@ -10,12 +10,13 @@ import contextlib
 import re
 import sys
 import typing
+import warnings
 from textwrap import dedent
 from types import FunctionType, GenericAlias
 from typing import Any, Final
 
 import typing_extensions
-from typing_extensions import LiteralString, TypeAliasType, TypeIs
+from typing_extensions import LiteralString, TypeAliasType, TypeIs, deprecated
 
 __all__ = (
     'DEPRECATED_ALIASES',
@@ -24,6 +25,7 @@ __all__ = (
     'is_any',
     'is_classvar',
     'is_concatenate',
+    'is_deprecated',
     'is_final',
     'is_generic',
     'is_literal',
@@ -466,8 +468,8 @@ if _IS_PY310:
     # On Python 3.10, with `Alias[int]` being such an instance of `GenericAlias`,
     # `isinstance(Alias[int], TypeAliasType)` returns `True`.
     # See https://github.com/python/cpython/issues/89828.
-    def is_typealiastype(tp: Any, /) -> 'TypeIs[TypeAliasType]':
-        return type(tp) is not GenericAlias and _is_typealiastype_inner(tp)
+    def is_typealiastype(obj: Any, /) -> 'TypeIs[TypeAliasType]':
+        return type(obj) is not GenericAlias and _is_typealiastype_inner(obj)
 else:
     is_typealiastype = _compile_isinstance_check_function('TypeAliasType', 'is_typealiastype')
 
@@ -498,6 +500,32 @@ True
 False
 ```
 """
+
+
+if sys.version_info >= (3, 13):
+
+    def is_deprecated(obj: Any, /) -> 'TypeIs[deprecated]':
+        return isinstance(obj, (warnings.deprecated, typing_extensions.deprecated))
+
+else:
+
+    def is_deprecated(obj: Any, /) -> 'TypeIs[deprecated]':
+        return isinstance(obj, typing_extensions.deprecated)
+
+
+is_deprecated.__doc__ = """
+Return whether the argument is a [`deprecated`][warnings.deprecated] instance.
+
+This also includes the [`typing_extensions` backport][typing_extensions.deprecated].
+
+```pycon
+>>> is_deprecated(warnings.deprecated('message'))
+True
+>>> is_deprecated(typing_extensions('deprecated'))
+True
+```
+"""
+
 
 # Aliases defined in the `typing` module using `typing._SpecialGenericAlias` (itself aliases as `alias()`):
 DEPRECATED_ALIASES: Final[dict[Any, type[Any]]] = {
