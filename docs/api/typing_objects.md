@@ -7,6 +7,7 @@
         - is_any
         - is_classvar
         - is_concatenate
+        - is_deprecated
         - is_final
         - is_generic
         - is_literal

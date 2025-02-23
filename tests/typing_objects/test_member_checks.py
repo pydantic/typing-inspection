@@ -2,12 +2,21 @@ import collections
 import sys
 import types
 import typing
+import warnings
 from collections.abc import Callable
 from typing import Any, NewType, TypeVar
 
 import pytest
 import typing_extensions
-from typing_extensions import ParamSpec, ParamSpecArgs, ParamSpecKwargs, TypeAlias, TypeAliasType, TypeVarTuple
+from typing_extensions import (
+    ParamSpec,
+    ParamSpecArgs,
+    ParamSpecKwargs,
+    TypeAlias,
+    TypeAliasType,
+    TypeVarTuple,
+    deprecated,
+)
 
 from typing_inspection import typing_objects
 
@@ -119,7 +128,7 @@ T = TypeVar('T')
 
 TypingExtensionsTypeAliasType = typing_extensions.TypeAliasType('TypingExtensionsTypeAliasType', int, type_params=(T,))
 
-type_alias_types: list[TypeAliasType] = []
+type_alias_types: list[TypeAliasType] = [TypingExtensionsTypeAliasType]
 if sys.version_info >= (3, 12):
     TypingTypeAliasType = typing_extensions.TypeAliasType('TypingTypeAliasType', int, type_params=(T,))
     type_alias_types.append(TypingTypeAliasType)
@@ -150,8 +159,7 @@ def test_is_typevar(type_var: TypeVar) -> None:
 
 TypingExtensionsTypeVarTuple = typing_extensions.TypeVarTuple('TypingExtensionsTypeVarTuple')
 
-type_var_tuples: list[TypeVarTuple] = []
-
+type_var_tuples: list[TypeVarTuple] = [TypingExtensionsTypeVarTuple]
 if sys.version_info >= (3, 11):
     TypingTypeVarTuple = typing.TypeVarTuple('TypingTypeVarTuple')
     type_var_tuples.append(TypingTypeVarTuple)
@@ -163,6 +171,19 @@ if sys.version_info >= (3, 11):
 )
 def test_is_typevartuple(type_var_tuple: TypeVarTuple) -> None:
     assert typing_objects.is_typevartuple(type_var_tuple)
+
+
+deprecated_types: list[deprecated] = [typing_extensions.deprecated('deprecated')]
+if sys.version_info >= (3, 13):
+    deprecated_types.append(warnings.deprecated('deprecated'))
+
+
+@pytest.mark.parametrize(
+    'deprecated',
+    deprecated_types,
+)
+def test_is_deprecated(deprecated: deprecated) -> None:
+    assert typing_objects.is_deprecated(deprecated)
 
 
 # Misc. tests:

@@ -10,7 +10,7 @@ variants, if they exists and are different.
 import sys
 from typing import Any, Final, NewType, TypeVar
 
-from typing_extensions import ParamSpec, ParamSpecArgs, ParamSpecKwargs, TypeAliasType, TypeIs, TypeVarTuple
+from typing_extensions import ParamSpec, ParamSpecArgs, ParamSpecKwargs, TypeAliasType, TypeIs, TypeVarTuple, deprecated
 
 __all__ = [
     'DEPRECATED_ALIASES',
@@ -19,6 +19,7 @@ __all__ = [
     'is_any',
     'is_classvar',
     'is_concatenate',
+    'is_deprecated',
     'is_final',
     'is_generic',
     'is_literal',
@@ -374,6 +375,20 @@ def is_unpack(obj: Any, /) -> bool:
     True
     >>> is_unpack(Unpack[Ts])
     False
+    ```
+    """
+
+def is_deprecated(obj: Any, /) -> TypeIs[deprecated]:
+    """
+    Return whether the argument is a [`deprecated`][warnings.deprecated] instance.
+
+    This also includes the [`typing_extensions` backport][typing_extensions.deprecated].
+
+    ```pycon
+    >>> is_deprecated(warnings.deprecated('message'))
+    True
+    >>> is_deprecated(typing_extensions.deprecated('deprecated'))
+    True
     ```
     """
 
