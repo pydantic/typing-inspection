@@ -50,7 +50,7 @@ if sys.version_info >= (3, 10):
 else:
     NoneType = type(None)
 
-def is_annotated(obj: Any) -> bool:
+def is_annotated(obj: Any, /) -> bool:
     """
     Return whether the argument is the [`Annotated`][typing.Annotated] [special form][].
 
@@ -62,7 +62,7 @@ def is_annotated(obj: Any) -> bool:
     ```
     """
 
-def is_any(obj: Any) -> bool:
+def is_any(obj: Any, /) -> bool:
     """
     Return whether the argument is the [`Any`][typing.Any] [special form][].
 
@@ -72,7 +72,7 @@ def is_any(obj: Any) -> bool:
     ```
     """
 
-def is_classvar(obj: Any) -> bool:
+def is_classvar(obj: Any, /) -> bool:
     """
     Return whether the argument is the [`ClassVar`][typing.ClassVar] [type qualifier][].
 
@@ -84,7 +84,7 @@ def is_classvar(obj: Any) -> bool:
     ```
     """
 
-def is_concatenate(obj: Any) -> bool:
+def is_concatenate(obj: Any, /) -> bool:
     """
     Return whether the argument is the [`Concatenate`][typing.Concatenate] [special form][].
 
@@ -96,7 +96,7 @@ def is_concatenate(obj: Any) -> bool:
     ```
     """
 
-def is_final(obj: Any) -> bool:
+def is_final(obj: Any, /) -> bool:
     """
     Return whether the argument is the [`Final`][typing.Final] [type qualifier][].
 
@@ -108,7 +108,7 @@ def is_final(obj: Any) -> bool:
     ```
     """
 
-def is_generic(obj: Any) -> bool:
+def is_generic(obj: Any, /) -> bool:
     """
     Return whether the argument is the [`Generic`][typing.Generic] [special form][].
 
@@ -120,7 +120,7 @@ def is_generic(obj: Any) -> bool:
     ```
     """
 
-def is_literal(obj: Any) -> bool:
+def is_literal(obj: Any, /) -> bool:
     """
     Return whether the argument is the [`Literal`][typing.Literal] [special form][].
 
@@ -132,7 +132,7 @@ def is_literal(obj: Any) -> bool:
     ```
     """
 
-def is_paramspec(obj: Any) -> TypeIs[ParamSpec]:
+def is_paramspec(obj: Any, /) -> TypeIs[ParamSpec]:
     """
     Return whether the argument is an instance of [`ParamSpec`][typing.ParamSpec].
 
@@ -143,7 +143,7 @@ def is_paramspec(obj: Any) -> TypeIs[ParamSpec]:
     ```
     """
 
-def is_typevar(obj: Any) -> TypeIs[TypeVar]:
+def is_typevar(obj: Any, /) -> TypeIs[TypeVar]:
     """
     Return whether the argument is an instance of [`TypeVar`][typing.TypeVar].
 
@@ -154,7 +154,7 @@ def is_typevar(obj: Any) -> TypeIs[TypeVar]:
     ```
     """
 
-def is_typevartuple(obj: Any) -> TypeIs[TypeVarTuple]:
+def is_typevartuple(obj: Any, /) -> TypeIs[TypeVarTuple]:
     """
     Return whether the argument is an instance of [`TypeVarTuple`][typing.TypeVarTuple].
 
@@ -165,7 +165,7 @@ def is_typevartuple(obj: Any) -> TypeIs[TypeVarTuple]:
     ```
     """
 
-def is_union(obj: Any) -> bool:
+def is_union(obj: Any, /) -> bool:
     """
     Return whether the argument is the [`Union`][typing.Union] [special form][].
 
@@ -183,7 +183,7 @@ def is_union(obj: Any) -> bool:
         This does not check for unions using the [new syntax][types-union] (e.g. `int | str`).
     """
 
-def is_namedtuple(obj: Any) -> bool:
+def is_namedtuple(obj: Any, /) -> bool:
     """Return whether the argument is a named tuple type.
 
     This includes [`NamedTuple`][typing.NamedTuple] subclasses and classes created from the
@@ -203,7 +203,7 @@ def is_namedtuple(obj: Any) -> bool:
     ```
     """
 
-def is_literalstring(obj: Any) -> bool:
+def is_literalstring(obj: Any, /) -> bool:
     """
     Return whether the argument is the [`LiteralString`][typing.LiteralString] [special form][].
 
@@ -213,7 +213,7 @@ def is_literalstring(obj: Any) -> bool:
     ```
     """
 
-def is_never(obj: Any) -> bool:
+def is_never(obj: Any, /) -> bool:
     """
     Return whether the argument is the [`Never`][typing.Never] [special form][].
 
@@ -223,7 +223,7 @@ def is_never(obj: Any) -> bool:
     ```
     """
 
-def is_newtype(obj: Any) -> TypeIs[NewType]:
+def is_newtype(obj: Any, /) -> TypeIs[NewType]:
     """
     Return whether the argument is a [`NewType`][typing.NewType].
 
@@ -234,7 +234,7 @@ def is_newtype(obj: Any) -> TypeIs[NewType]:
     ```
     """
 
-def is_nodefault(obj: Any) -> bool:
+def is_nodefault(obj: Any, /) -> bool:
     """
     Return whether the argument is the [`NoDefault`][typing.NoDefault] sentinel object.
 
@@ -244,7 +244,7 @@ def is_nodefault(obj: Any) -> bool:
     ```
     """
 
-def is_noreturn(obj: Any) -> bool:
+def is_noreturn(obj: Any, /) -> bool:
     """
     Return whether the argument is the [`NoReturn`][typing.NoReturn] [special form][].
 
@@ -256,7 +256,7 @@ def is_noreturn(obj: Any) -> bool:
     ```
     """
 
-def is_notrequired(obj: Any) -> bool:
+def is_notrequired(obj: Any, /) -> bool:
     """
     Return whether the argument is the [`NotRequired`][typing.NotRequired] [special form][].
 
@@ -266,7 +266,7 @@ def is_notrequired(obj: Any) -> bool:
     ```
     """
 
-def is_paramspecargs(obj: Any) -> TypeIs[ParamSpecArgs]:
+def is_paramspecargs(obj: Any, /) -> TypeIs[ParamSpecArgs]:
     """
     Return whether the argument is an instance of [`ParamSpecArgs`][typing.ParamSpecArgs].
 
@@ -277,7 +277,7 @@ def is_paramspecargs(obj: Any) -> TypeIs[ParamSpecArgs]:
     ```
     """
 
-def is_paramspeckwargs(obj: Any) -> TypeIs[ParamSpecKwargs]:
+def is_paramspeckwargs(obj: Any, /) -> TypeIs[ParamSpecKwargs]:
     """
     Return whether the argument is an instance of [`ParamSpecKwargs`][typing.ParamSpecKwargs].
 
@@ -288,7 +288,7 @@ def is_paramspeckwargs(obj: Any) -> TypeIs[ParamSpecKwargs]:
     ```
     """
 
-def is_readonly(obj: Any) -> bool:
+def is_readonly(obj: Any, /) -> bool:
     """
     Return whether the argument is the [`ReadOnly`][typing.ReadOnly] [special form][].
 
@@ -298,7 +298,7 @@ def is_readonly(obj: Any) -> bool:
     ```
     """
 
-def is_required(obj: Any) -> bool:
+def is_required(obj: Any, /) -> bool:
     """
     Return whether the argument is the [`Required`][typing.Required] [special form][].
 
@@ -308,7 +308,7 @@ def is_required(obj: Any) -> bool:
     ```
     """
 
-def is_self(obj: Any) -> bool:
+def is_self(obj: Any, /) -> bool:
     """
     Return whether the argument is the [`Self`][typing.Self] [special form][].
 
@@ -318,7 +318,7 @@ def is_self(obj: Any) -> bool:
     ```
     """
 
-def is_typealias(obj: Any) -> bool:
+def is_typealias(obj: Any, /) -> bool:
     """
     Return whether the argument is the [`TypeAlias`][typing.TypeAlias] [special form][].
 
@@ -328,7 +328,7 @@ def is_typealias(obj: Any) -> bool:
     ```
     """
 
-def is_typeguard(obj: Any) -> bool:
+def is_typeguard(obj: Any, /) -> bool:
     """
     Return whether the argument is the [`TypeGuard`][typing.TypeGuard] [special form][].
 
@@ -338,7 +338,7 @@ def is_typeguard(obj: Any) -> bool:
     ```
     """
 
-def is_typeis(obj: Any) -> bool:
+def is_typeis(obj: Any, /) -> bool:
     """
     Return whether the argument is the [`TypeIs`][typing.TypeIs] [special form][].
 
@@ -348,7 +348,7 @@ def is_typeis(obj: Any) -> bool:
     ```
     """
 
-def is_typealiastype(obj: Any) -> TypeIs[TypeAliasType]:
+def is_typealiastype(obj: Any, /) -> TypeIs[TypeAliasType]:
     """
     Return whether the argument is a [`TypeAliasType`][typing.TypeAliasType] instance.
 
@@ -365,7 +365,7 @@ def is_typealiastype(obj: Any) -> TypeIs[TypeAliasType]:
     ```
     """
 
-def is_unpack(obj: Any) -> bool:
+def is_unpack(obj: Any, /) -> bool:
     """
     Return whether the argument is the [`Unpack`][typing.Unpack] [special form][].
 
