@@ -163,7 +163,13 @@ def get_literal_values(
                 else:
                     values_and_type.append((arg, type(arg)))  # pyright: ignore[reportUnknownArgumentType]
 
-        yield from (p for p, _ in dict.fromkeys(values_and_type))
+        try:
+            dct = dict.fromkeys(values_and_type)
+        except TypeError:
+            # Unhashable parameters, the Python implementation allows them
+            yield from (p for p, _ in values_and_type)
+        else:
+            yield from (p for p, _ in dct)
 
 
 Qualifier: TypeAlias = Literal['required', 'not_required', 'read_only', 'class_var', 'final']
