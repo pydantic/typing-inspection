@@ -277,33 +277,37 @@ class ForbiddenQualifier(Exception):
         self.qualifier = qualifier
 
 
-class _InferredTypeEnum(Enum):
-    INFERRED = auto()
+class _UnknownTypeEnum(Enum):
+    UNKNOWN = auto()
+
+    def __str__(self) -> str:
+        return 'UNKNOWN'
 
     def __repr__(self) -> str:
-        return 'INFERRED'
+        return '<UNKNOWN>'
 
 
-INFERRED = _InferredTypeEnum.INFERRED
-"""A sentinel value used when no [type expression][] is used, indicating
-that the type should be inferred from the assigned value.
-"""
+UNKNOWN = _UnknownTypeEnum.UNKNOWN
+"""A sentinel value used when no [type expression][] is present."""
 
-InferredType: TypeAlias = Literal[_InferredTypeEnum.INFERRED]
-"""The type of the [`INFERRED`][typing_inspection.introspection.INFERRED] sentinel value."""
+_UnkownType: TypeAlias = Literal[_UnknownTypeEnum.UNKNOWN]
+"""The type of the [`UNKNOWN`][typing_inspection.introspection.UNKNOWN] sentinel value."""
 
 
 class InspectedAnnotation(NamedTuple):
     """The result of the inspected annotation."""
 
-    type: Any | InferredType
+    type: Any | _UnkownType
     """The final [type expression][], with [type qualifiers][type qualifier] and annotated metadata stripped.
 
-    If no type expression is available, the [`INFERRED`][typing_inspection.introspection.INFERRED] sentinel
+    If no type expression is available, the [`UNKNOWN`][typing_inspection.introspection.UNKNOWN] sentinel
     value is used instead. This is the case when a [type qualifier][] is used with no type annotation:
 
     ```python
     ID: Final = 1
+
+    class C:
+        x: ClassVar = 'test'
     ```
     """
 
@@ -413,16 +417,18 @@ def inspect_annotation(
         else:
             break
 
-    # `Final` is the only type qualifier allowed to be used as a bare annotation
-    # (`ClassVar` is under discussion: https://discuss.python.org/t/81705):
+    # `Final` and `ClassVar` are type qualifiers allowed to be used as a bare annotation
+    # (`ClassVar` is not explicitly specified, but will be: https://discuss.python.org/t/81705).
     if typing_objects.is_final(annotation):
         if 'final' not in allowed_qualifiers:
             raise ForbiddenQualifier('final')
         qualifiers.add('final')
-        # No type expression is available, the type should be inferred from the
-        # assigned value.
-        # See https://typing.readthedocs.io/en/latest/spec/qualifiers.html#syntax
-        annotation = INFERRED
+        annotation = UNKNOWN
+    elif typing_objects.is_classvar(annotation):
+        if 'class_var' not in allowed_qualifiers:
+            raise ForbiddenQualifier('class_var')
+        qualifiers.add('class_var')
+        annotation = UNKNOWN
 
     return InspectedAnnotation(annotation, qualifiers, metadata)
 
