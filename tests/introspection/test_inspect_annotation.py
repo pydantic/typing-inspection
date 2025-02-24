@@ -6,7 +6,13 @@ from typing import Any, Literal
 import pytest
 import typing_extensions as t_e
 
-from typing_inspection.introspection import INFERRED, AnnotationSource, ForbiddenQualifier, inspect_annotation
+from typing_inspection.introspection import UNKNOWN, AnnotationSource, ForbiddenQualifier, inspect_annotation
+
+
+def test_unknown_repr() -> None:
+    assert str(UNKNOWN) == 'UNKNOWN'
+    assert repr(UNKNOWN) == '<UNKNOWN>'
+
 
 _all_qualifiers: list[Any] = [
     t_e.ClassVar[int],
@@ -51,14 +57,30 @@ def test_annotation_source_invalid_qualifiers(source: AnnotationSource, annotati
             inspect_annotation(annotation, annotation_source=source)
 
 
-def test_bare_final_qualifier() -> None:
+def test_final_bare_final_qualifier() -> None:
     result = inspect_annotation(
         t.Final,
         annotation_source=AnnotationSource.ANY,
     )
 
     assert result.qualifiers == {'final'}
-    assert result.type is INFERRED
+    assert result.type is UNKNOWN
+
+    with pytest.raises(ForbiddenQualifier):
+        inspect_annotation(t.Final, annotation_source=AnnotationSource.BARE)
+
+
+def test_class_var_bare_final_qualifier() -> None:
+    result = inspect_annotation(
+        t.ClassVar,
+        annotation_source=AnnotationSource.ANY,
+    )
+
+    assert result.qualifiers == {'class_var'}
+    assert result.type is UNKNOWN
+
+    with pytest.raises(ForbiddenQualifier):
+        inspect_annotation(t.ClassVar, annotation_source=AnnotationSource.BARE)
 
 
 def test_nested_metadata_and_qualifiers() -> None:

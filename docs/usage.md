@@ -98,28 +98,40 @@ If you want to allow all of them, use the [`AnnotationSource.ANY`][typing_inspec
 source.
 
 The result of the [`inspect_annotation()`][typing_inspection.introspection.inspect_annotation] function contains the underlying
-[type expression][], the qualifiers and the annotated metadata. Note that some qualifiers are allowed to be used without any
-type expression. In this case, the type should be inferred from the assigned value:
+[type expression][], the qualifiers and the annotated metadata.
+
+#### Handling bare type qualifiers
+
+Note that some qualifiers are allowed to be used without any
+type expression. In this case, the [`InspectedAnnotation.type`][typing_inspection.introspection.InspectedAnnotation.type] attribute
+will take the value of the [`UNKNOWN`][typing_inspection.introspection.UNKNOWN] sentinel.
+
+Depending on the type qualifier that was used, you can infer the actual type in different ways:
 
 ```python
+from typing import get_type_hints
+
+from typing_inspection.introspection import UNKNOWN, AnnotationSource, inspect_annotation
+
+
 class A:
-    x: Annotated[Final, 'meta'] = 1  # type of x should be inferred to `int`.
-```
+    # For `Final` annotations, the type should be inferred from the assignment
+    # (and you may error if no assignment is available).
+    # In this case, you can infer to either `int` or `Literal[1]`:
+    x: Annotated[Final, 'meta'] = 1
 
-In this case, the [`InspectedAnnotation.type`][typing_inspection.introspection.InspectedAnnotation.type] attribute is set
-to the [`INFERRED`][typing_inspection.introspection.INFERRED] sentinel value, so you should check for this sentinel value
-before doing any processing on the type:
+    # For `ClassVar` annotations, the type can be inferred as `Any`,
+    # or from the assignment if available (both options are valid in all cases):
+    y: ClassVar
 
-```python
-from typing_inspection.introspection import INFERRED, AnnotationSource, inspect_annotation
 
 inspected_annotation = inspect_annotation(
-    Annotated[Final, 'meta'],
+    get_type_hints(A)['x'],
     annotation_source=AnnotationSource.CLASS,
 )
 
-if inspected_annotation.type is INFERRED:
-    ann_type = type(assigned_value)  # assigned_value would come from the class
+if inspected_annotation.type is UNKNOWN:
+    ann_type = type(A.x)
 else:
     ann_type = inspected_annotation.type
 ```
