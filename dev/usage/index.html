@@ -369,6 +369,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Unpacking metadata and qualifiers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#handling-bare-type-qualifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Handling bare type qualifiers
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -534,6 +549,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Unpacking metadata and qualifiers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#handling-bare-type-qualifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Handling bare type qualifiers
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -651,23 +681,35 @@ which are not allowed elsewhere (the allowed typed qualifiers are documented in 
 If you want to allow all of them, use the <a class="autorefs autorefs-internal" href="../api/introspection/#typing_inspection.introspection.AnnotationSource.ANY"><code>AnnotationSource.ANY</code></a> annotation
 source.</p>
 <p>The result of the <a class="autorefs autorefs-internal" href="../api/introspection/#typing_inspection.introspection.inspect_annotation"><code>inspect_annotation()</code></a> function contains the underlying
-<a class="autorefs autorefs-external" href="https://typing.readthedocs.io/en/latest/spec/glossary.html#term-type-expression">type expression</a>, the qualifiers and the annotated metadata. Note that some qualifiers are allowed to be used without any
-type expression. In this case, the type should be inferred from the assigned value:</p>
-<div class="language-python highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">A</span><span class="p">:</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Final</span><span class="p">,</span> <span class="s1">&#39;meta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># type of x should be inferred to `int`.</span>
-</code></pre></div>
-<p>In this case, the <a class="autorefs autorefs-internal" href="../api/introspection/#typing_inspection.introspection.InspectedAnnotation.type"><code>InspectedAnnotation.type</code></a> attribute is set
-to the <a class="autorefs autorefs-internal" href="../api/introspection/#typing_inspection.introspection.INFERRED"><code>INFERRED</code></a> sentinel value, so you should check for this sentinel value
-before doing any processing on the type:</p>
-<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing_inspection.introspection</span><span class="w"> </span><span class="kn">import</span> <span class="n">INFERRED</span><span class="p">,</span> <span class="n">AnnotationSource</span><span class="p">,</span> <span class="n">inspect_annotation</span>
+<a class="autorefs autorefs-external" href="https://typing.readthedocs.io/en/latest/spec/glossary.html#term-type-expression">type expression</a>, the qualifiers and the annotated metadata.</p>
+<h4 id="handling-bare-type-qualifiers">Handling bare type qualifiers<a class="headerlink" href="#handling-bare-type-qualifiers" title="Permanent link">&para;</a></h4>
+<p>Note that some qualifiers are allowed to be used without any
+type expression. In this case, the <a class="autorefs autorefs-internal" href="../api/introspection/#typing_inspection.introspection.InspectedAnnotation.type"><code>InspectedAnnotation.type</code></a> attribute
+will take the value of the <a class="autorefs autorefs-internal" href="../api/introspection/#typing_inspection.introspection.UNKNOWN"><code>UNKNOWN</code></a> sentinel.</p>
+<p>Depending on the type qualifier that was used, you can infer the actual type in different ways:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_type_hints</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_inspection.introspection</span><span class="w"> </span><span class="kn">import</span> <span class="n">UNKNOWN</span><span class="p">,</span> <span class="n">AnnotationSource</span><span class="p">,</span> <span class="n">inspect_annotation</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">A</span><span class="p">:</span>
+    <span class="c1"># For `Final` annotations, the type should be inferred from the assignment</span>
+    <span class="c1"># (and you may error if no assignment is available).</span>
+    <span class="c1"># In this case, you can infer to either `int` or `Literal[1]`:</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Final</span><span class="p">,</span> <span class="s1">&#39;meta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="c1"># For `ClassVar` annotations, the type can be inferred as `Any`,</span>
+    <span class="c1"># or from the assignment if available (both options are valid in all cases):</span>
+    <span class="n">y</span><span class="p">:</span> <span class="n">ClassVar</span>
+
 
 <span class="n">inspected_annotation</span> <span class="o">=</span> <span class="n">inspect_annotation</span><span class="p">(</span>
-    <span class="n">Annotated</span><span class="p">[</span><span class="n">Final</span><span class="p">,</span> <span class="s1">&#39;meta&#39;</span><span class="p">],</span>
+    <span class="n">get_type_hints</span><span class="p">(</span><span class="n">A</span><span class="p">)[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span>
     <span class="n">annotation_source</span><span class="o">=</span><span class="n">AnnotationSource</span><span class="o">.</span><span class="n">CLASS</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="k">if</span> <span class="n">inspected_annotation</span><span class="o">.</span><span class="n">type</span> <span class="ow">is</span> <span class="n">INFERRED</span><span class="p">:</span>
-    <span class="n">ann_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">assigned_value</span><span class="p">)</span>  <span class="c1"># assigned_value would come from the class</span>
+<span class="k">if</span> <span class="n">inspected_annotation</span><span class="o">.</span><span class="n">type</span> <span class="ow">is</span> <span class="n">UNKNOWN</span><span class="p">:</span>
+    <span class="n">ann_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">ann_type</span> <span class="o">=</span> <span class="n">inspected_annotation</span><span class="o">.</span><span class="n">type</span>
 </code></pre></div>

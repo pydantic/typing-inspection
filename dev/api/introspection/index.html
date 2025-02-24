@@ -573,18 +573,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#typing_inspection.introspection.INFERRED" class="md-nav__link">
+  <a href="#typing_inspection.introspection.UNKNOWN" class="md-nav__link">
     <span class="md-ellipsis">
-      INFERRED
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#typing_inspection.introspection.InferredType" class="md-nav__link">
-    <span class="md-ellipsis">
-      InferredType
+      UNKNOWN
     </span>
   </a>
   
@@ -838,18 +829,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#typing_inspection.introspection.INFERRED" class="md-nav__link">
+  <a href="#typing_inspection.introspection.UNKNOWN" class="md-nav__link">
     <span class="md-ellipsis">
-      INFERRED
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#typing_inspection.introspection.InferredType" class="md-nav__link">
-    <span class="md-ellipsis">
-      InferredType
+      UNKNOWN
     </span>
   </a>
   
@@ -1552,15 +1534,18 @@ qualifiers may be (dis)allowed. To allow any type qualifier, use
 
 
 <a href="#typing_inspection.introspection.InspectedAnnotation.type" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span class="nb">type</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span> <span class="o">|</span> <span class="n"><a class="autorefs autorefs-internal" title="typing_inspection.introspection.InferredType" href="#typing_inspection.introspection.InferredType">InferredType</a></span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span class="nb">type</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span> <span class="o">|</span> <span class="n"><span title="typing_inspection.introspection._UnkownType">_UnkownType</span></span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
 
         <p>The final <a class="autorefs autorefs-external" href="https://typing.readthedocs.io/en/latest/spec/glossary.html#term-type-expression">type expression</a>, with <a class="autorefs autorefs-external" href="https://typing.readthedocs.io/en/latest/spec/glossary.html#term-type-qualifier">type qualifiers</a> and annotated metadata stripped.</p>
-<p>If no type expression is available, the <a class="autorefs autorefs-internal" href="#typing_inspection.introspection.INFERRED"><code>INFERRED</code></a> sentinel
+<p>If no type expression is available, the <a class="autorefs autorefs-internal" href="#typing_inspection.introspection.UNKNOWN"><code>UNKNOWN</code></a> sentinel
 value is used instead. This is the case when a <a class="autorefs autorefs-external" href="https://typing.readthedocs.io/en/latest/spec/glossary.html#term-type-qualifier">type qualifier</a> is used with no type annotation:</p>
 <div class="language-python highlight"><pre><span></span><code><span class="n">ID</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">C</span><span class="p">:</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="s1">&#39;test&#39;</span>
 </code></pre></div>
     </div>
 
@@ -1632,42 +1617,17 @@ value is used instead. This is the case when a <a class="autorefs autorefs-exter
 
 
 
-<h2 id="typing_inspection.introspection.INFERRED" class="doc doc-heading">
-            <span class="doc doc-object-name doc-attribute-name">INFERRED</span>
+<h2 id="typing_inspection.introspection.UNKNOWN" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">UNKNOWN</span>
 
 
-<a href="#typing_inspection.introspection.INFERRED" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">INFERRED</span> <span class="o">=</span> <span class="n"><span title="typing_inspection.introspection._InferredTypeEnum.INFERRED">INFERRED</span></span>
+<a href="#typing_inspection.introspection.UNKNOWN" class="headerlink" title="Permanent link">&para;</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">UNKNOWN</span> <span class="o">=</span> <span class="n"><span title="typing_inspection.introspection._UnknownTypeEnum.UNKNOWN">UNKNOWN</span></span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
 
-        <p>A sentinel value used when no <a class="autorefs autorefs-external" href="https://typing.readthedocs.io/en/latest/spec/glossary.html#term-type-expression">type expression</a> is used, indicating
-that the type should be inferred from the assigned value.</p>
-    </div>
-
-</div>
-
-
-
-
-
-
-<div class="doc doc-object doc-attribute">
-
-
-
-<h2 id="typing_inspection.introspection.InferredType" class="doc doc-heading">
-            <span class="doc doc-object-name doc-attribute-name">InferredType</span>
-
-
-<a href="#typing_inspection.introspection.InferredType" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">InferredType</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing_extensions.TypeAlias" href="https://typing-extensions.readthedocs.io/en/latest/index.html#typing_extensions.TypeAlias">TypeAlias</a></span> <span class="o">=</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Literal" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span><span class="n"><span title="typing_inspection.introspection._InferredTypeEnum.INFERRED">INFERRED</span></span><span class="p">]</span>
-</code></pre></div>
-
-    <div class="doc doc-contents ">
-
-        <p>The type of the <a class="autorefs autorefs-internal" href="#typing_inspection.introspection.INFERRED"><code>INFERRED</code></a> sentinel value.</p>
+        <p>A sentinel value used when no <a class="autorefs autorefs-external" href="https://typing.readthedocs.io/en/latest/spec/glossary.html#term-type-expression">type expression</a> is present.</p>
     </div>
 
 </div>
