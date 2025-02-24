@@ -66,3 +66,7 @@ def test_literal_values_unpack_type_aliases_undefined(create_module) -> None:
     expected = [module.TestType0, 'b', 'c']
 
     assert list(get_literal_values(t.Literal[module.TestType1, 'c'], unpack_type_aliases='lenient')) == expected
+
+
+def test_literal_values_unhashable_type() -> None:
+    assert list(get_literal_values(t_e.Literal[[1, 'a'], [1, 'a']])) == [[1, 'a'], [1, 'a']]  # noqa: PYI062
