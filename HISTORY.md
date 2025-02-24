@@ -1,3 +1,7 @@
+## v0.3.1 (2025-02-24)
+
+- Allow unhashable items in `Literal` forms by @Viicos in [#28](https://github.com/pydantic/typing-inspection/pull/28)
+
 ## v0.3.0 (2025-02-24)
 
 - Handle bare `ClassVar` type qualifiers, rename `INFERRED` sentinel by @Viicos in [#26](https://github.com/pydantic/typing-inspection/pull/26)
