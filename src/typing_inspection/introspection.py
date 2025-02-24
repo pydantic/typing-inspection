@@ -279,6 +279,9 @@ class AnnotationSource(IntEnum):
 class ForbiddenQualifier(Exception):
     """The provided [type qualifier][] is forbidden."""
 
+    qualifier: Qualifier
+    """The forbidden qualifier."""
+
     def __init__(self, qualifier: Qualifier, /) -> None:
         self.qualifier = qualifier
 
