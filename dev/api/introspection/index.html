@@ -463,6 +463,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#typing_inspection.introspection.AnnotationSource.DATACLASS" class="md-nav__link">
+    <span class="md-ellipsis">
+      DATACLASS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#typing_inspection.introspection.AnnotationSource.TYPED_DICT" class="md-nav__link">
     <span class="md-ellipsis">
       TYPED_DICT
@@ -728,6 +737,15 @@
   <a href="#typing_inspection.introspection.AnnotationSource.CLASS" class="md-nav__link">
     <span class="md-ellipsis">
       CLASS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#typing_inspection.introspection.AnnotationSource.DATACLASS" class="md-nav__link">
+    <span class="md-ellipsis">
+      DATACLASS
     </span>
   </a>
   
@@ -1279,7 +1297,7 @@ qualifiers may be (dis)allowed. To allow any type qualifier, use
 
 
 <a href="#typing_inspection.introspection.AnnotationSource.ASSIGNMENT_OR_VARIABLE" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">ASSIGNMENT_OR_VARIABLE</span> <span class="o">=</span> <span class="mi">1</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">ASSIGNMENT_OR_VARIABLE</span> <span class="o">=</span> <span class="n"><a class="autorefs autorefs-external" title="enum.auto" href="https://docs.python.org/3/library/enum.html#enum.auto">auto</a></span><span class="p">()</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -1307,7 +1325,7 @@ qualifiers may be (dis)allowed. To allow any type qualifier, use
 
 
 <a href="#typing_inspection.introspection.AnnotationSource.CLASS" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">CLASS</span> <span class="o">=</span> <span class="mi">2</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">CLASS</span> <span class="o">=</span> <span class="n"><a class="autorefs autorefs-external" title="enum.auto" href="https://docs.python.org/3/library/enum.html#enum.auto">auto</a></span><span class="p">()</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -1331,12 +1349,42 @@ qualifiers may be (dis)allowed. To allow any type qualifier, use
 
 
 
+<h3 id="typing_inspection.introspection.AnnotationSource.DATACLASS" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">DATACLASS</span>
+
+
+<a href="#typing_inspection.introspection.AnnotationSource.DATACLASS" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">DATACLASS</span> <span class="o">=</span> <span class="n"><a class="autorefs autorefs-external" title="enum.auto" href="https://docs.python.org/3/library/enum.html#enum.auto">auto</a></span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>An annotation used in the body of a dataclass:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Test</span><span class="p">:</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">y</span><span class="p">:</span> <span class="n">InitVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;test&#39;</span>
+</code></pre></div>
+<p><strong>Allowed type qualifiers:</strong> <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar"><code>ClassVar</code></a>, <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/typing.html#typing.Final"><code>Final</code></a>, <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/dataclasses.html#dataclasses-init-only-variables"><code>InitVar</code></a>.</p>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
 <h3 id="typing_inspection.introspection.AnnotationSource.TYPED_DICT" class="doc doc-heading">
             <span class="doc doc-object-name doc-attribute-name">TYPED_DICT</span>
 
 
 <a href="#typing_inspection.introspection.AnnotationSource.TYPED_DICT" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">TYPED_DICT</span> <span class="o">=</span> <span class="mi">3</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">TYPED_DICT</span> <span class="o">=</span> <span class="n"><a class="autorefs autorefs-external" title="enum.auto" href="https://docs.python.org/3/library/enum.html#enum.auto">auto</a></span><span class="p">()</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -1366,7 +1414,7 @@ qualifiers may be (dis)allowed. To allow any type qualifier, use
 
 
 <a href="#typing_inspection.introspection.AnnotationSource.NAMED_TUPLE" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">NAMED_TUPLE</span> <span class="o">=</span> <span class="mi">4</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">NAMED_TUPLE</span> <span class="o">=</span> <span class="n"><a class="autorefs autorefs-external" title="enum.auto" href="https://docs.python.org/3/library/enum.html#enum.auto">auto</a></span><span class="p">()</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -1395,7 +1443,7 @@ qualifiers may be (dis)allowed. To allow any type qualifier, use
 
 
 <a href="#typing_inspection.introspection.AnnotationSource.FUNCTION" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">FUNCTION</span> <span class="o">=</span> <span class="mi">5</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">FUNCTION</span> <span class="o">=</span> <span class="n"><a class="autorefs autorefs-external" title="enum.auto" href="https://docs.python.org/3/library/enum.html#enum.auto">auto</a></span><span class="p">()</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -1423,7 +1471,7 @@ qualifiers may be (dis)allowed. To allow any type qualifier, use
 
 
 <a href="#typing_inspection.introspection.AnnotationSource.ANY" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">ANY</span> <span class="o">=</span> <span class="mi">6</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">ANY</span> <span class="o">=</span> <span class="n"><a class="autorefs autorefs-external" title="enum.auto" href="https://docs.python.org/3/library/enum.html#enum.auto">auto</a></span><span class="p">()</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -1448,7 +1496,7 @@ qualifiers may be (dis)allowed. To allow any type qualifier, use
 
 
 <a href="#typing_inspection.introspection.AnnotationSource.BARE" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">BARE</span> <span class="o">=</span> <span class="mi">7</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">BARE</span> <span class="o">=</span> <span class="n"><a class="autorefs autorefs-external" title="enum.auto" href="https://docs.python.org/3/library/enum.html#enum.auto">auto</a></span><span class="p">()</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -1506,7 +1554,7 @@ qualifiers may be (dis)allowed. To allow any type qualifier, use
 
 
 <a href="#typing_inspection.introspection.Qualifier" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">Qualifier</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing_extensions.TypeAlias" href="https://typing-extensions.readthedocs.io/en/latest/index.html#typing_extensions.TypeAlias">TypeAlias</a></span> <span class="o">=</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Literal" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span><span class="s1">&#39;required&#39;</span><span class="p">,</span> <span class="s1">&#39;not_required&#39;</span><span class="p">,</span> <span class="s1">&#39;read_only&#39;</span><span class="p">,</span> <span class="s1">&#39;class_var&#39;</span><span class="p">,</span> <span class="s1">&#39;final&#39;</span><span class="p">]</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">Qualifier</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing_extensions.TypeAlias" href="https://typing-extensions.readthedocs.io/en/latest/index.html#typing_extensions.TypeAlias">TypeAlias</a></span> <span class="o">=</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Literal" href="https://docs.python.org/3/library/typing.html#typing.Literal">Literal</a></span><span class="p">[</span><span class="s1">&#39;required&#39;</span><span class="p">,</span> <span class="s1">&#39;not_required&#39;</span><span class="p">,</span> <span class="s1">&#39;read_only&#39;</span><span class="p">,</span> <span class="s1">&#39;class_var&#39;</span><span class="p">,</span> <span class="s1">&#39;init_var&#39;</span><span class="p">,</span> <span class="s1">&#39;final&#39;</span><span class="p">]</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
