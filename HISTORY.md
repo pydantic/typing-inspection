@@ -1,3 +1,9 @@
+## v0.4.0 (2025-02-25)
+
+- Add support for `dataclasses.InitVar` as a type qualifier by @Viicos in [#31](https://github.com/pydantic/typing-inspection/pull/31)
+  A new `DATACLASS` annotation source is added.
+- Add explicit annotation for `ForbiddenQualifier` exception by @Viicos in [#30](https://github.com/pydantic/typing-inspection/pull/30)
+
 ## v0.3.1 (2025-02-24)
 
 - Allow unhashable items in `Literal` forms by @Viicos in [#28](https://github.com/pydantic/typing-inspection/pull/28)
