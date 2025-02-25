@@ -1,0 +1,882 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Runtime typing introspection tools">
+      
+      
+      
+        <link rel="canonical" href="https://pydantic.github.io/typing-inspection/latest/usage/">
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../api/introspection/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.4">
+    
+    
+      
+        <title>Usage - Typing inspection</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.8608ea7d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../extra/tweaks.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="pink" data-md-color-accent="pink">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#usage" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Typing inspection" class="md-header__button md-logo" aria-label="Typing inspection" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Typing inspection
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Usage
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="pink" data-md-color-accent="pink"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="pink" data-md-color-accent="pink"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="pink" data-md-color-accent="pink"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 2c3.87 0 7 3.13 7 7 0 2.38-1.19 4.47-3 5.74V17c0 .55-.45 1-1 1H6c-.55 0-1-.45-1-1v-2.26C3.19 13.47 2 11.38 2 9c0-3.87 3.13-7 7-7M6 21v-1h6v1c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1M9 4C6.24 4 4 6.24 4 9c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58 0-2.76-2.24-5-5-5m10 9h-2l-3.2 9h1.9l.7-2h3.2l.7 2h1.9zm-2.15 5.65L18 15l1.15 3.65z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pydantic/typing-inspection" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pydantic/typing-inspection
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Typing inspection" class="md-nav__button md-logo" aria-label="Typing inspection" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Typing inspection
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pydantic/typing-inspection" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pydantic/typing-inspection
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Index
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Usage
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Usage
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Page contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Page contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#inspecting-annotations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Inspecting annotations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Inspecting annotations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fetching-type-hints" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fetching type hints
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unpacking-metadata-and-qualifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unpacking metadata and qualifiers
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Unpacking metadata and qualifiers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#handling-bare-type-qualifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Handling bare type qualifiers
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inspecting-the-type-expression" class="md-nav__link">
+    <span class="md-ellipsis">
+      Inspecting the type expression
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    API documentation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            API documentation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/introspection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    introspection
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/typing_objects/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    typing_objects
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Page contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Page contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#inspecting-annotations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Inspecting annotations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Inspecting annotations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fetching-type-hints" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fetching type hints
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unpacking-metadata-and-qualifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unpacking metadata and qualifiers
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Unpacking metadata and qualifiers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#handling-bare-type-qualifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Handling bare type qualifiers
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inspecting-the-type-expression" class="md-nav__link">
+    <span class="md-ellipsis">
+      Inspecting the type expression
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h1>
+<p>The library is divided into two submodules:</p>
+<ul>
+<li>
+<p><a class="autorefs autorefs-internal" href="../api/typing_objects/#typing_inspection.typing_objects"><code>typing_inspection.typing_objects</code></a>: provides functions to check if a variable is a <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/typing.html#module-typing"><code>typing</code></a> object:
+  <div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">get_origin</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_inspection.typing_objects</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_union</span>
+
+<span class="n">is_union</span><span class="p">(</span><span class="n">get_origin</span><span class="p">(</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]))</span>  <span class="c1"># True</span>
+</code></pre></div></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You might be tempted to use a simple identity check:</p>
+<div class="language-pycon highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">get_origin</span><span class="p">(</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="ow">is</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span>
+</code></pre></div>
+<p>However, <a class="autorefs autorefs-external" href="https://typing-extensions.readthedocs.io/en/latest/index.html#module-typing_extensions"><code>typing_extensions</code></a> might provide a different version of the <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/typing.html#module-typing"><code>typing</code></a> objects. Instead,
+the <a class="autorefs autorefs-internal" href="../api/typing_objects/#typing_inspection.typing_objects"><code>typing_objects</code></a> functions make sure to check against both variants,
+if they are different.</p>
+</div>
+</li>
+<li>
+<p><a class="autorefs autorefs-internal" href="../api/introspection/#typing_inspection.introspection"><code>typing_inspection.introspection</code></a>: provides high-level introspection functions, taking runtime edge cases
+  into account.</p>
+</li>
+</ul>
+<h2 id="inspecting-annotations">Inspecting annotations<a class="headerlink" href="#inspecting-annotations" title="Permanent link">&para;</a></h2>
+<p>If, as a library, you rely heavily on type hints, you may encounter subtle unexpected behaviors and performance
+issues when inspecting annotations. As such, this section provides a recommended workflow to do so.</p>
+<h3 id="fetching-type-hints">Fetching type hints<a class="headerlink" href="#fetching-type-hints" title="Permanent link">&para;</a></h3>
+<p>The first step is to gather the type annotations from the object you want to inspect. The
+<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/typing.html#typing.get_type_hints"><code>typing.get_type_hints()</code></a> function can be used to do so. If you want to make use of annotated
+metadata, make sure to set the <code>include_extras</code> argument to <code>True</code>.</p>
+<div class="language-pycon highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">A</span><span class="p">:</span>
+<span class="gp">... </span>   <span class="n">x</span><span class="p">:</span> <span class="nb">int</span>
+<span class="gp">... </span>   <span class="n">y</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_type_hints</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">include_extras</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">{&#39;x&#39;: int, &#39;y&#39;: Annotated[int, ...]}</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Currently, <code>typing-inspection</code> does not provide any utility to fetch (and evaluate) type annotations. The current
+<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/typing.html#module-typing"><code>typing</code></a> utilities might contain subtle bugs across the different Python versions, so there is value in
+having similar functionality. It might be best to wait for <a href="https://peps.python.org/pep-0649/">PEP 649</a> to be fully
+implemented first. In the meanwhile, the <a class="autorefs autorefs-external" href="https://typing-extensions.readthedocs.io/en/latest/index.html#typing_extensions.get_type_hints"><code>typing_extensions.get_type_hints()</code></a>
+backport can be used.</p>
+</div>
+<h3 id="unpacking-metadata-and-qualifiers">Unpacking metadata and qualifiers<a class="headerlink" href="#unpacking-metadata-and-qualifiers" title="Permanent link">&para;</a></h3>
+<p>The annotations fetched in the previous step are called <a class="autorefs autorefs-external" href="https://typing.readthedocs.io/en/latest/spec/glossary.html#term-annotation-expression">annotation expressions</a>.
+An annotation expression is a <a class="autorefs autorefs-external" href="https://typing.readthedocs.io/en/latest/spec/glossary.html#term-type-expression">type expression</a>, optionally surrounded by one or more <a class="autorefs autorefs-external" href="https://typing.readthedocs.io/en/latest/spec/glossary.html#term-type-qualifier">type qualifiers</a>
+or by the <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/typing.html#typing.Annotated"><code>Annotated</code></a> form.</p>
+<p>For instance, in the following example:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span><span class="p">,</span> <span class="n">ClassVar</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">A</span><span class="p">:</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Annotated</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="s2">&quot;meta&quot;</span><span class="p">]]</span>
+</code></pre></div>
+<p>The type hint of <code>x</code> is an annotation expression. The underlying type expression is <code>int</code>. It is wrapped
+by the <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar"><code>ClassVar</code></a> type qualifier, and the <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/typing.html#typing.Annotated"><code>Annotated</code></a> <a class="autorefs autorefs-external" href="https://typing.readthedocs.io/en/latest/spec/glossary.html#term-special-form">special form</a>.</p>
+<p>The goal of this step is to:</p>
+<ul>
+<li>Unwrap the underlying <a class="autorefs autorefs-external" href="https://typing.readthedocs.io/en/latest/spec/glossary.html#term-type-expression">type expression</a>.</li>
+<li>Keep track of the type qualifiers and annotated metadata.</li>
+</ul>
+<p>To unwrap the type hint, use the <a class="autorefs autorefs-internal" href="../api/introspection/#typing_inspection.introspection.inspect_annotation"><code>inspect_annotation()</code></a> function:</p>
+<div class="language-pycon highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">typing_inspection.introspection</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnnotationSource</span><span class="p">,</span> <span class="n">inspect_annotation</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inspect_annotation</span><span class="p">(</span>
+<span class="gp">... </span>   <span class="n">ClassVar</span><span class="p">[</span><span class="n">Annotated</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="s2">&quot;meta&quot;</span><span class="p">]],</span>
+<span class="gp">... </span>   <span class="n">annotation_source</span><span class="o">=</span><span class="n">AnnotationSource</span><span class="o">.</span><span class="n">CLASS</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="go">InspectedAnnotation(type=int, qualifiers={&quot;class_var&quot;}, metadata=[&quot;meta&quot;])</span>
+</code></pre></div>
+<p>Note that depending on the annotation source, different type qualifiers can be (dis)allowed.
+For instance, <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/typing.html#typing.TypedDict"><code>TypedDict</code></a> classes allow <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/typing.html#typing.Required"><code>Required</code></a> and <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/typing.html#typing.NotRequired"><code>NotRequired</code></a>,
+which are not allowed elsewhere (the allowed typed qualifiers are documented in the
+<a class="autorefs autorefs-internal" href="../api/introspection/#typing_inspection.introspection.AnnotationSource"><code>AnnotationSource</code></a> enum class).</p>
+<p>A <a class="autorefs autorefs-internal" href="../api/introspection/#typing_inspection.introspection.ForbiddenQualifier">ForbiddenQualifier</a> exception is raised if an invalid qualifier is used.
+If you want to allow all of them, use the <a class="autorefs autorefs-internal" href="../api/introspection/#typing_inspection.introspection.AnnotationSource.ANY"><code>AnnotationSource.ANY</code></a> annotation
+source.</p>
+<p>The result of the <a class="autorefs autorefs-internal" href="../api/introspection/#typing_inspection.introspection.inspect_annotation"><code>inspect_annotation()</code></a> function contains the underlying
+<a class="autorefs autorefs-external" href="https://typing.readthedocs.io/en/latest/spec/glossary.html#term-type-expression">type expression</a>, the qualifiers and the annotated metadata.</p>
+<h4 id="handling-bare-type-qualifiers">Handling bare type qualifiers<a class="headerlink" href="#handling-bare-type-qualifiers" title="Permanent link">&para;</a></h4>
+<p>Note that some qualifiers are allowed to be used without any
+type expression. In this case, the <a class="autorefs autorefs-internal" href="../api/introspection/#typing_inspection.introspection.InspectedAnnotation.type"><code>InspectedAnnotation.type</code></a> attribute
+will take the value of the <a class="autorefs autorefs-internal" href="../api/introspection/#typing_inspection.introspection.UNKNOWN"><code>UNKNOWN</code></a> sentinel.</p>
+<p>Depending on the type qualifier that was used, you can infer the actual type in different ways:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_type_hints</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_inspection.introspection</span><span class="w"> </span><span class="kn">import</span> <span class="n">UNKNOWN</span><span class="p">,</span> <span class="n">AnnotationSource</span><span class="p">,</span> <span class="n">inspect_annotation</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">A</span><span class="p">:</span>
+    <span class="c1"># For `Final` annotations, the type should be inferred from the assignment</span>
+    <span class="c1"># (and you may error if no assignment is available).</span>
+    <span class="c1"># In this case, you can infer to either `int` or `Literal[1]`:</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Final</span><span class="p">,</span> <span class="s1">&#39;meta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="c1"># For `ClassVar` annotations, the type can be inferred as `Any`,</span>
+    <span class="c1"># or from the assignment if available (both options are valid in all cases):</span>
+    <span class="n">y</span><span class="p">:</span> <span class="n">ClassVar</span>
+
+
+<span class="n">inspected_annotation</span> <span class="o">=</span> <span class="n">inspect_annotation</span><span class="p">(</span>
+    <span class="n">get_type_hints</span><span class="p">(</span><span class="n">A</span><span class="p">)[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span>
+    <span class="n">annotation_source</span><span class="o">=</span><span class="n">AnnotationSource</span><span class="o">.</span><span class="n">CLASS</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="k">if</span> <span class="n">inspected_annotation</span><span class="o">.</span><span class="n">type</span> <span class="ow">is</span> <span class="n">UNKNOWN</span><span class="p">:</span>
+    <span class="n">ann_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">ann_type</span> <span class="o">=</span> <span class="n">inspected_annotation</span><span class="o">.</span><span class="n">type</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Parsing <a href="https://peps.python.org/pep-0695/">PEP 695</a> type aliases</p>
+<p>In Python 3.12, the new <a class="autorefs autorefs-external" href="https://docs.python.org/3/glossary.html#term-type">type</a> statement can be used to define <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/typing.html#type-aliases">type aliases</a>.
+When a type alias is wrapped by the <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/typing.html#typing.Annotated"><code>Annotated</code></a> form, the type alias' value will <em>not</em> be unpacked by Python
+at runtime. This means that while the following is technically valid:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="nb">type</span> <span class="n">MyInt</span> <span class="o">=</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="s2">&quot;int_meta&quot;</span><span class="p">]</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">A</span><span class="p">:</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">MyInt</span><span class="p">,</span> <span class="s2">&quot;other_meta&quot;</span><span class="p">]</span>
+</code></pre></div>
+<p>it might be necessary to parse the type alias during annotation inspection. This behavior can be controlled using the
+<code>unpack_type_aliases</code> parameter:</p>
+<div class="language-pycon highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">inspect_annotation</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">Annotated</span><span class="p">[</span><span class="n">MyInt</span><span class="p">,</span> <span class="s2">&quot;other_meta&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">annotation_source</span><span class="o">=</span><span class="n">AnnotationSource</span><span class="o">.</span><span class="n">CLASS</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">unpack_type_aliases</span><span class="o">=</span><span class="s2">&quot;eager&quot;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="go">InspectedAnnotation(type=int, qualifiers={}, metadata=[&quot;int_meta&quot;, &quot;other_meta&quot;])</span>
+</code></pre></div>
+<p>Whether you should unpack type aliases depends on your use case. If the annotated metadata present in the type alias
+is <em>only</em> meant to be applied on the annotated type (and not the attribute that will be type hinted), you probably
+need to keep type aliases as is, and possibly error later if invalid metadata is found when inspecting the type alias.</p>
+<p>Note that type aliases are lazily evaluated. During type alias inspection, any undefined symbol
+will raise a <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#NameError"><code>NameError</code></a>. To prevent this from happening, you can use <code>'skip'</code> to avoid expanding
+type aliases (the default), or <code>'lenient'</code> to fallback to <code>'skip'</code> if the type alias contains an undefined
+symbol:</p>
+<div class="language-pycon highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span> <span class="n">BrokenType</span> <span class="o">=</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Undefined</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span> <span class="n">MyAlias</span> <span class="o">=</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">BrokenType</span><span class="p">,</span> <span class="s2">&quot;meta&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inspect_annotation</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">MyAlias</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">annotation_source</span><span class="o">=</span><span class="n">AnnotationSource</span><span class="o">.</span><span class="n">CLASS</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">unpack_type_aliases</span><span class="o">=</span><span class="s2">&quot;lenient&quot;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="go">InspectedAnnotation(type=BrokenType, qualifiers={}, metadata=[&quot;meta&quot;])</span>
+</code></pre></div>
+</div>
+<h3 id="inspecting-the-type-expression">Inspecting the type expression<a class="headerlink" href="#inspecting-the-type-expression" title="Permanent link">&para;</a></h3>
+<p>With the qualifiers and <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/typing.html#typing.Annotated"><code>Annotated</code></a> forms removed, we can now proceed to inspect
+the type expression.</p>
+<p>First of all, some simple typing <a class="autorefs autorefs-external" href="https://typing.readthedocs.io/en/latest/spec/glossary.html#term-special-form">special forms</a> can be checked:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing_inspection.typing_objects</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_any</span><span class="p">,</span> <span class="n">is_self</span>
+
+<span class="c1"># This would come from `InspectedAnnotation.type`, after checking for `INFERRED`:</span>
+<span class="n">type_expr</span> <span class="o">=</span> <span class="o">...</span>
+
+<span class="k">if</span> <span class="n">is_any</span><span class="p">(</span><span class="n">type_expr</span><span class="p">):</span>
+    <span class="o">...</span>  <span class="c1"># Handle `typing.Any`</span>
+
+<span class="k">if</span> <span class="n">is_self</span><span class="p">(</span><span class="n">type_expr</span><span class="p">):</span>
+    <span class="o">...</span>  <span class="c1"># Handle `typing.Self`</span>
+</code></pre></div>
+<p>We will then use the <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/typing.html#typing.get_origin"><code>typing.get_origin()</code></a> function to fetch the origin of the type. Depending
+on the type, the origin has different meanings:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing_inspection.introspection</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_literal_values</span><span class="p">,</span> <span class="n">is_union_origin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_inspection.typing_objects</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_annotated</span><span class="p">,</span> <span class="n">is_literal</span>
+
+<span class="n">origin</span> <span class="o">=</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">type_expr</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">is_union_origin</span><span class="p">(</span><span class="n">origin</span><span class="p">):</span>
+    <span class="c1"># Handle `typing.Union` (or the new `|` syntax)</span>
+    <span class="n">union_args</span> <span class="o">=</span> <span class="n">type_expr</span><span class="o">.</span><span class="n">__args__</span>
+    <span class="o">...</span>
+
+<span class="c1"># You may also want to check for Annotated forms. While we unwrapped them</span>
+<span class="c1"># in step 2, `Annotated` can be used in parts of the annotation, e.g.</span>
+<span class="c1"># `list[Annotated[int, ...]]`:</span>
+<span class="k">if</span> <span class="n">is_annotated</span><span class="p">(</span><span class="n">origin</span><span class="p">):</span>
+    <span class="n">annotated_type</span> <span class="o">=</span> <span class="n">type_expr</span><span class="o">.</span><span class="n">__origin__</span>  <span class="c1"># not to be confused with the origin above</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="n">type_expr</span><span class="o">.</span><span class="n">__metadata__</span>
+
+<span class="k">if</span> <span class="n">is_literal</span><span class="p">(</span><span class="n">origin</span><span class="p">):</span>
+    <span class="c1"># Handle `typing.Literal`</span>
+    <span class="n">literal_values</span> <span class="o">=</span> <span class="n">get_literal_values</span><span class="p">(</span><span class="n">type_expr</span><span class="p">)</span>
+</code></pre></div>
+<p>While <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/typing.html#typing.Literal"><code>Literal</code></a> values can be retrieved using <code>type_expr.__args__</code>, the
+<a class="autorefs autorefs-internal" href="../api/introspection/#typing_inspection.introspection.get_literal_values"><code>get_literal_values()</code></a> function ensures
+<a href="https://peps.python.org/pep-0695/">PEP 695</a> type aliases are properly expanded.</p>
+<p>Next, we will take care of the typing aliases deprecated by <a href="https://peps.python.org/pep-0585/">PEP 585</a>.
+For instance, <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/typing.html#typing.List"><code>typing.List</code></a> is deprecated and replaced by the built-in <a class="autorefs autorefs-external" href="https://docs.python.org/3/glossary.html#term-list"><code>list</code></a> type. In this case,
+the origin of an <em>unparameterized</em> deprecated type alias is the replacement type, so we will use this one:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing_inspection.typing_objects</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEPRECATED_ALIASES</span>
+
+<span class="c1"># If `type_expr` is `typing.List`, `origin` is the built-in `list`.</span>
+<span class="c1"># We thus replace `type_expr` with `list`, and set `origin` to `None`</span>
+<span class="c1"># to emulate the same behavior if `type_expr` was `list` in the beginning:</span>
+<span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">type_expr</span> <span class="ow">in</span> <span class="n">DEPRECATED_ALIASES</span><span class="p">:</span>
+    <span class="n">type_expr</span> <span class="o">=</span> <span class="n">origin</span>
+    <span class="n">origin</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+<p>At this point, if <code>origin</code> is not <code>None</code>, you can safely assume that <code>type_expr</code> is a parameterized generic type.
+You can then define your own logic to handle the type expression, and have different code paths if you are
+dealing with a parameterized type (e.g. <code>list[int]</code>) or a "bare" type:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">handle_generic_type</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span> <span class="n">arguments</span><span class="o">=</span><span class="n">type_expr</span><span class="o">.</span><span class="n">__args__</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">handle_type</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">type_expr</span><span class="p">)</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If a deprecated type alias is <em>parameterized</em> (e.g. <code>typing.List[int]</code>), the origin will be the
+replacement type (e.g. <code>list</code>), and not the deprecated alias (e.g. <code>typing.List</code>). This means
+that handling <code>typing.List[int]</code> or <code>list</code> should be equivalent.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.copy", "navigation.instant", "navigation.instant.prefetch", "navigation.instant.preview", "navigation.instant.progress", "navigation.top"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.f1b6f286.min.js"></script>
+      
+    
+  </body>
+</html>
