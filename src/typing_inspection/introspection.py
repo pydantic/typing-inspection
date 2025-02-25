@@ -5,10 +5,11 @@ from __future__ import annotations
 import sys
 import types
 from collections.abc import Generator, Sequence
+from dataclasses import InitVar
 from enum import Enum, IntEnum, auto
-from typing import Any, Literal, NamedTuple
+from typing import Any, Literal, NamedTuple, cast
 
-from typing_extensions import TypeAlias, assert_never, get_origin
+from typing_extensions import TypeAlias, assert_never, get_args, get_origin
 
 from . import typing_objects
 
@@ -172,8 +173,10 @@ def get_literal_values(
             yield from (p for p, _ in dct)
 
 
-Qualifier: TypeAlias = Literal['required', 'not_required', 'read_only', 'class_var', 'final']
+Qualifier: TypeAlias = Literal['required', 'not_required', 'read_only', 'class_var', 'init_var', 'final']
 """A [type qualifier][]."""
+
+_all_qualifiers: set[Qualifier] = set(get_args(Qualifier))
 
 
 # TODO at some point, we could switch to an enum flag, so that multiple sources
@@ -187,7 +190,7 @@ class AnnotationSource(IntEnum):
     Depending on the source, different [type qualifiers][type qualifier] may be (dis)allowed.
     """
 
-    ASSIGNMENT_OR_VARIABLE = 1
+    ASSIGNMENT_OR_VARIABLE = auto()
     """An annotation used in an assignment or variable annotation:
 
     ```python
@@ -198,7 +201,7 @@ class AnnotationSource(IntEnum):
     **Allowed type qualifiers:** [`Final`][typing.Final].
     """
 
-    CLASS = 2
+    CLASS = auto()
     """An annotation used in the body of a class:
 
     ```python
@@ -210,7 +213,20 @@ class AnnotationSource(IntEnum):
     **Allowed type qualifiers:** [`ClassVar`][typing.ClassVar], [`Final`][typing.Final].
     """
 
-    TYPED_DICT = 3
+    DATACLASS = auto()
+    """An annotation used in the body of a dataclass:
+
+    ```python
+    @dataclass
+    class Test:
+        x: Final[int] = 1
+        y: InitVar[str] = 'test'
+    ```
+
+    **Allowed type qualifiers:** [`ClassVar`][typing.ClassVar], [`Final`][typing.Final], [`InitVar`][dataclasses-init-only-variables].
+    """  # noqa: E501
+
+    TYPED_DICT = auto()
     """An annotation used in the body of a [`TypedDict`][typing.TypedDict]:
 
     ```python
@@ -223,7 +239,7 @@ class AnnotationSource(IntEnum):
     [`NotRequired`][typing.NotRequired].
     """
 
-    NAMED_TUPLE = 4
+    NAMED_TUPLE = auto()
     """An annotation used in the body of a [`NamedTuple`][typing.NamedTuple].
 
     ```python
@@ -235,7 +251,7 @@ class AnnotationSource(IntEnum):
     **Allowed type qualifiers:** none.
     """
 
-    FUNCTION = 5
+    FUNCTION = auto()
     """An annotation used in a function, either for a parameter or the return value.
 
     ```python
@@ -246,13 +262,13 @@ class AnnotationSource(IntEnum):
     **Allowed type qualifiers:** none.
     """
 
-    ANY = 6
+    ANY = auto()
     """An annotation that might come from any source.
 
     **Allowed type qualifiers:** all.
     """
 
-    BARE = 7
+    BARE = auto()
     """An annotation that is inspected as is.
 
     **Allowed type qualifiers:** none.
@@ -266,12 +282,14 @@ class AnnotationSource(IntEnum):
             return {'final'}
         elif self is AnnotationSource.CLASS:
             return {'final', 'class_var'}
+        elif self is AnnotationSource.DATACLASS:
+            return {'final', 'class_var', 'init_var'}
         elif self is AnnotationSource.TYPED_DICT:
             return {'required', 'not_required', 'read_only'}
         elif self in (AnnotationSource.NAMED_TUPLE, AnnotationSource.FUNCTION, AnnotationSource.BARE):
             return set()
         elif self is AnnotationSource.ANY:
-            return {'required', 'not_required', 'read_only', 'class_var', 'final'}
+            return _all_qualifiers
         else:  # pragma: no cover
             assert_never(self)
 
@@ -327,7 +345,7 @@ class InspectedAnnotation(NamedTuple):
     """The annotated metadata."""
 
 
-def inspect_annotation(
+def inspect_annotation(  # noqa: PLR0915
     annotation: Any,
     /,
     *,
@@ -423,11 +441,15 @@ def inspect_annotation(
             else:
                 # origin is not None but not a type qualifier nor `Annotated` (e.g. `list[int]`):
                 break
+        elif isinstance(annotation, InitVar):
+            if 'init_var' not in allowed_qualifiers:
+                raise ForbiddenQualifier('init_var')
+            qualifiers.add('init_var')
+            annotation = cast(Any, annotation.type)
         else:
             break
 
-    # `Final` and `ClassVar` are type qualifiers allowed to be used as a bare annotation
-    # (`ClassVar` is not explicitly specified, but will be: https://discuss.python.org/t/81705).
+    # `Final`, `ClassVar` and `InitVar` are type qualifiers allowed to be used as a bare annotation:
     if typing_objects.is_final(annotation):
         if 'final' not in allowed_qualifiers:
             raise ForbiddenQualifier('final')
@@ -437,6 +459,11 @@ def inspect_annotation(
         if 'class_var' not in allowed_qualifiers:
             raise ForbiddenQualifier('class_var')
         qualifiers.add('class_var')
+        annotation = UNKNOWN
+    elif annotation is InitVar:
+        if 'init_var' not in allowed_qualifiers:
+            raise ForbiddenQualifier('init_var')
+        qualifiers.add('init_var')
         annotation = UNKNOWN
 
     return InspectedAnnotation(annotation, qualifiers, metadata)

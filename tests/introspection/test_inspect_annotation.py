@@ -1,5 +1,6 @@
 import sys
 import typing as t
+from dataclasses import InitVar
 from textwrap import dedent
 from typing import Any, Literal
 
@@ -20,6 +21,7 @@ _all_qualifiers: list[Any] = [
     t_e.ReadOnly[int],
     t_e.Required[int],
     t_e.NotRequired[int],
+    InitVar[int],
 ]
 
 
@@ -28,6 +30,7 @@ _all_qualifiers: list[Any] = [
     [
         (AnnotationSource.ASSIGNMENT_OR_VARIABLE, [t_e.Final[int]]),
         (AnnotationSource.CLASS, [t_e.ClassVar[int], t.Final[int]]),
+        (AnnotationSource.DATACLASS, [t_e.ClassVar[int], t.Final[int], InitVar[int]]),
         (AnnotationSource.TYPED_DICT, [t_e.ReadOnly[int], t_e.Required[int], t_e.NotRequired[int]]),
         (AnnotationSource.ANY, _all_qualifiers),
     ],
@@ -42,10 +45,11 @@ def test_annotation_source_valid_qualifiers(source: AnnotationSource, annotation
     [
         (
             AnnotationSource.ASSIGNMENT_OR_VARIABLE,
-            [t_e.ClassVar[int], t_e.ReadOnly[int], t_e.Required[int], t_e.NotRequired[int]],
+            [t_e.ClassVar[int], t_e.ReadOnly[int], t_e.Required[int], t_e.NotRequired[int], InitVar[int]],
         ),
-        (AnnotationSource.CLASS, [t_e.ReadOnly[int], t_e.Required[int], t_e.NotRequired[int]]),
-        (AnnotationSource.TYPED_DICT, [t_e.ClassVar[int], t_e.Final[int]]),
+        (AnnotationSource.CLASS, [t_e.ReadOnly[int], t_e.Required[int], t_e.NotRequired[int], InitVar[int]]),
+        (AnnotationSource.DATACLASS, [t_e.ReadOnly[int], t_e.Required[int], t_e.NotRequired[int]]),
+        (AnnotationSource.TYPED_DICT, [t_e.ClassVar[int], t_e.Final[int], InitVar[int]]),
         (AnnotationSource.NAMED_TUPLE, _all_qualifiers),
         (AnnotationSource.FUNCTION, _all_qualifiers),
         (AnnotationSource.BARE, _all_qualifiers),
@@ -57,30 +61,25 @@ def test_annotation_source_invalid_qualifiers(source: AnnotationSource, annotati
             inspect_annotation(annotation, annotation_source=source)
 
 
-def test_final_bare_final_qualifier() -> None:
+@pytest.mark.parametrize(
+    ['qualifier_obj', 'qualifier_str'],
+    [
+        (t.Final, 'final'),
+        (t.ClassVar, 'class_var'),
+        (InitVar, 'init_var'),
+    ],
+)
+def test_bare_qualifier(qualifier_obj: Any, qualifier_str: str) -> None:
     result = inspect_annotation(
-        t.Final,
+        qualifier_obj,
         annotation_source=AnnotationSource.ANY,
     )
 
-    assert result.qualifiers == {'final'}
+    assert result.qualifiers == {qualifier_str}
     assert result.type is UNKNOWN
 
     with pytest.raises(ForbiddenQualifier):
-        inspect_annotation(t.Final, annotation_source=AnnotationSource.BARE)
-
-
-def test_class_var_bare_final_qualifier() -> None:
-    result = inspect_annotation(
-        t.ClassVar,
-        annotation_source=AnnotationSource.ANY,
-    )
-
-    assert result.qualifiers == {'class_var'}
-    assert result.type is UNKNOWN
-
-    with pytest.raises(ForbiddenQualifier):
-        inspect_annotation(t.ClassVar, annotation_source=AnnotationSource.BARE)
+        inspect_annotation(qualifier_obj, annotation_source=AnnotationSource.BARE)
 
 
 def test_nested_metadata_and_qualifiers() -> None:
