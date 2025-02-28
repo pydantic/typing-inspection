@@ -46,6 +46,7 @@ jobs:
         with:
           workflow: ci.yml
           name: 'coverage-html'
+          path: 'coverage-html'
           allow_forks: true
           commit: ${{ github.event.workflow_run.head_sha }}
 
