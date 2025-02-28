@@ -30,3 +30,31 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_PR_RUN_ID: ${{ github.event.workflow_run.id }}
+
+  smokeshow:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: coverage
+
+    steps:
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          python-version: '3.12'
+
+      - uses: dawidd6/action-download-artifact@v8
+        with:
+          workflow: ci.yml
+          name: 'coverage-html'
+          allow_forks: true
+          commit: ${{ github.event.workflow_run.head_sha }}
+
+      - run: uvx smokeshow upload coverage-html
+        env:
+          SMOKESHOW_GITHUB_STATUS_DESCRIPTION: Coverage {coverage-percentage}
+          SMOKESHOW_GITHUB_COVERAGE_THRESHOLD: 85
+          SMOKESHOW_GITHUB_CONTEXT: coverage
+          SMOKESHOW_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SMOKESHOW_GITHUB_PR_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          SMOKESHOW_AUTH_KEY: ${{ secrets.SMOKESHOW_AUTH_KEY }}
