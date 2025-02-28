@@ -1,4 +1,4 @@
-name: Post coverage comment
+name: Coverage comment, status & badge
 
 on:
   workflow_run:
@@ -50,7 +50,6 @@ jobs:
           allow_forks: true
           commit: ${{ github.event.workflow_run.head_sha }}
 
-      - run: ls -la
       - run: uvx smokeshow upload coverage-html
         env:
           SMOKESHOW_GITHUB_STATUS_DESCRIPTION: Coverage {coverage-percentage}
