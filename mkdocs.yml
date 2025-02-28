@@ -75,7 +75,7 @@ markdown_extensions:
     alternate_style: true
 
 hooks:
-  - docs/hooks/rename_module.py
+  - docs/.hooks/rename_module.py
 
 plugins:
 - search

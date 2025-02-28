@@ -1,4 +1,4 @@
-sources = src tests docs/hooks/
+sources = src tests docs/.hooks/
 
 .PHONY: .uv  ## Check that uv is installed
 .uv:
