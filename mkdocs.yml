@@ -1,7 +1,7 @@
 site_name: Typing inspection
 site_description: Runtime typing introspection tools
 strict: true
-site_url: https://pydantic.github.io/typing-inspection/
+site_url: https://typing-inspection.pydantic.dev
 
 theme:
   name: material
