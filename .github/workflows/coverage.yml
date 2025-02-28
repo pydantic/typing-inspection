@@ -7,8 +7,7 @@ on:
       - completed
 
 jobs:
-  test:
-    name: Display coverage
+  coverage-comment:
     runs-on: ubuntu-latest
     if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
     permissions:
@@ -31,7 +30,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_PR_RUN_ID: ${{ github.event.workflow_run.id }}
 
-  smokeshow:
+  coverage-status-badge:
     runs-on: ubuntu-latest
 
     environment:
@@ -50,6 +49,7 @@ jobs:
           allow_forks: true
           commit: ${{ github.event.workflow_run.head_sha }}
 
+      - run: ls -la
       - run: uvx smokeshow upload coverage-html
         env:
           SMOKESHOW_GITHUB_STATUS_DESCRIPTION: Coverage {coverage-percentage}
