@@ -4,12 +4,8 @@
 .uv:
 	@uv -V || echo 'Please install uv: https://docs.astral.sh/uv/getting-started/installation/'
 
-.PHONY: .pre-commit
-.pre-commit: ## Check that pre-commit is installed
-	@pre-commit -V || echo 'Please install pre-commit: https://pre-commit.com/'
-
 .PHONY: install
-install: .uv .pre-commit ## Install the package, dependencies, and pre-commit for local development
+install: .uv  ## Install package and dependencies for local development
 	uv sync --frozen --all-groups
 	pre-commit install --install-hooks
 
