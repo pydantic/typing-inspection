@@ -7,7 +7,7 @@
 .PHONY: install
 install: .uv  ## Install package and dependencies for local development
 	uv sync --frozen --all-groups
-	pre-commit install --install-hooks
+	uv run pre-commit install --install-hooks
 
 .PHONY: test
 test:

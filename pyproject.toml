@@ -40,7 +40,8 @@ Changelog = 'https://github.com/pydantic/typing-inspection/blob/main/HISTORY.md'
 
 [dependency-groups]
 dev = [
-    'mypy>=1.15.0',  # To use stubgen
+    'mypy>=1.15.0', # To use stubgen
+    'pre-commit>=4.1.0',
 ]
 tests = [
     'coverage>=7.6.12',
