@@ -2,18 +2,18 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://typing-inspection.pydantic.dev/latest/</loc>
-         <lastmod>2025-02-28</lastmod>
+         <lastmod>2025-03-02</lastmod>
     </url>
     <url>
          <loc>https://typing-inspection.pydantic.dev/latest/usage/</loc>
-         <lastmod>2025-02-28</lastmod>
+         <lastmod>2025-03-02</lastmod>
     </url>
     <url>
          <loc>https://typing-inspection.pydantic.dev/latest/api/introspection/</loc>
-         <lastmod>2025-02-28</lastmod>
+         <lastmod>2025-03-02</lastmod>
     </url>
     <url>
          <loc>https://typing-inspection.pydantic.dev/latest/api/typing_objects/</loc>
-         <lastmod>2025-02-28</lastmod>
+         <lastmod>2025-03-02</lastmod>
     </url>
 </urlset>
