@@ -194,6 +194,8 @@ jobs:
       - lint
       - test
       - docs
+      - test-typing-extensions
+      - coverage-combine
     runs-on: ubuntu-latest
     steps:
       - name: Decide whether the needed jobs succeeded or failed
