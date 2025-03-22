@@ -27,6 +27,7 @@ __all__ = (
     'is_concatenate',
     'is_deprecated',
     'is_final',
+    'is_forwardref',
     'is_generic',
     'is_literal',
     'is_literalstring',
@@ -197,7 +198,20 @@ False
 ```
 """
 
-# ForwardRef?
+
+# Unlikely to have a different version in `typing-extensions`, but keep it consistent.
+# Also note that starting in 3.14, this is an alias to `annotationlib.ForwardRef`, but
+# accessing it from `typing` doesn't seem to be deprecated.
+is_forwardref = _compile_isinstance_check_function('ForwardRef', 'is_forwardref')
+is_forwardref.__doc__ = """
+Return whether the argument is an instance of [`ForwardRef`][typing.ForwardRef].
+
+```pycon
+>>> is_forwardref(ForwardRef('T'))
+True
+```
+"""
+
 
 is_generic = _compile_identity_check_function('Generic', 'is_generic')
 is_generic.__doc__ = """
