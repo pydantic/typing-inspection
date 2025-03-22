@@ -4,18 +4,18 @@ The library is divided into two submodules:
 
 - [`typing_inspection.typing_objects`][]: provides functions to check if a variable is a [`typing`][] object:
   ```python
-  from typing_extensions import Union, get_origin
+  from typing_extensions import Literal, get_origin
 
-  from typing_inspection.typing_objects import is_union
+  from typing_inspection.typing_objects import is_literal
 
-  is_union(get_origin(Union[int, str]))  # True
+  is_literal(get_origin(Literal[1, 2]))  # True
   ```
 
     !!! note
         You might be tempted to use a simple identity check:
 
         ```pycon
-        >>> get_origin(Union[int, str]) is typing.Union
+        >>> get_origin(Literal[1, 2]) is typing.Literal
         ```
 
         However, [`typing_extensions`][] might provide a different version of the [`typing`][] objects. Instead,

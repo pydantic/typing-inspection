@@ -23,6 +23,40 @@ __all__ = (
     'is_union_origin',
 )
 
+if sys.version_info >= (3, 14):
+
+    def is_union_origin(obj: Any, /) -> bool:
+        """Return whether the provided origin is the union form.
+
+        ```pycon
+        >>> is_union_origin(typing.Union)
+        True
+        >>> is_union_origin(get_origin(int | str))
+        True
+        >>> is_union_origin(types.UnionType)
+        True
+        ```
+
+        !!! note
+            Starting in Python 3.14, the [`typing.Union`][] special form [was changed](https://github.com/python/cpython/pull/105511)
+            to be an alias to [`types.UnionType`][]. As such, it is recommended to not use this function
+            anymore (provided that you only support Python 3.14 or greater), and instead perform
+            the check directly:
+
+            ```python
+            import types
+            from typing import Union, get_origin
+
+            typ = Union[int, str]
+            origin = get_origin(typ)
+            if origin is types.UnionType:
+                ...
+            ```
+        """
+        return obj is types.UnionType
+        return typing_objects.is_union(obj) or obj is types.UnionType
+
+
 if sys.version_info >= (3, 10):
 
     def is_union_origin(obj: Any, /) -> bool:
@@ -33,7 +67,25 @@ if sys.version_info >= (3, 10):
         True
         >>> is_union_origin(get_origin(int | str))
         True
+        >>> is_union_origin(types.UnionType)
+        True
         ```
+
+        !!! note
+            Starting in Python 3.14, the [`typing.Union`][] special form [was changed](https://github.com/python/cpython/pull/105511)
+            to be an alias to [`types.UnionType`][]. As such, it is recommended to not use this function
+            anymore (provided that you only support Python 3.14 or greater), and instead perform
+            the check directly:
+
+            ```python
+            import types
+            from typing import Union, get_origin
+
+            typ = Union[int, str]
+            origin = get_origin(typ)
+            if origin is types.UnionType:
+                ...
+            ```
         """
         return typing_objects.is_union(obj) or obj is types.UnionType
 
@@ -47,7 +99,25 @@ else:
         True
         >>> is_union_origin(get_origin(int | str))
         True
+        >>> is_union_origin(types.UnionType)
+        True
         ```
+
+        !!! note
+            Starting in Python 3.14, the [`typing.Union`][] special form [was changed](https://github.com/python/cpython/pull/105511)
+            to be an alias to [`types.UnionType`][]. As such, it is recommended to not use this function
+            anymore (provided that you only support Python 3.14 or greater), and instead perform
+            the check directly:
+
+            ```python
+            import types
+            from typing import Union, get_origin
+
+            typ = Union[int, str]
+            origin = get_origin(typ)
+            if origin is types.UnionType:
+                ...
+            ```
         """
         return typing_objects.is_union(obj)
 
