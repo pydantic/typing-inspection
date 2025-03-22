@@ -604,16 +604,16 @@
 <ul>
 <li>
 <p><a class="autorefs autorefs-internal" href="../api/typing_objects/#typing_inspection.typing_objects"><code>typing_inspection.typing_objects</code></a>: provides functions to check if a variable is a <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/typing.html#module-typing"><code>typing</code></a> object:
-  <div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">get_origin</span>
+  <div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">get_origin</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing_inspection.typing_objects</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_inspection.typing_objects</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_literal</span>
 
-<span class="n">is_union</span><span class="p">(</span><span class="n">get_origin</span><span class="p">(</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]))</span>  <span class="c1"># True</span>
+<span class="n">is_literal</span><span class="p">(</span><span class="n">get_origin</span><span class="p">(</span><span class="n">Literal</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]))</span>  <span class="c1"># True</span>
 </code></pre></div></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You might be tempted to use a simple identity check:</p>
-<div class="language-pycon highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">get_origin</span><span class="p">(</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="ow">is</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span>
+<div class="language-pycon highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">get_origin</span><span class="p">(</span><span class="n">Literal</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span> <span class="ow">is</span> <span class="n">typing</span><span class="o">.</span><span class="n">Literal</span>
 </code></pre></div>
 <p>However, <a class="autorefs autorefs-external" href="https://typing-extensions.readthedocs.io/en/latest/index.html#module-typing_extensions"><code>typing_extensions</code></a> might provide a different version of the <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/typing.html#module-typing"><code>typing</code></a> objects. Instead,
 the <a class="autorefs autorefs-internal" href="../api/typing_objects/#typing_inspection.typing_objects"><code>typing_objects</code></a> functions make sure to check against both variants,
