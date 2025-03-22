@@ -8,7 +8,7 @@ variants, if they exists and are different.
 """
 
 import sys
-from typing import Any, Final, NewType, TypeVar
+from typing import Any, Final, ForwardRef, NewType, TypeVar
 
 from typing_extensions import ParamSpec, ParamSpecArgs, ParamSpecKwargs, TypeAliasType, TypeIs, TypeVarTuple, deprecated
 
@@ -106,6 +106,16 @@ def is_final(obj: Any, /) -> bool:
     True
     >>> is_final(Final[int])
     False
+    ```
+    """
+
+def is_forwardref(obj: Any, /) -> TypeIs[ForwardRef]:
+    """
+    Return whether the argument is an instance of [`ForwardRef`][typing.ForwardRef].
+
+    ```pycon
+    >>> is_forwardref(ForwardRef('T'))
+    True
     ```
     """
 
