@@ -521,13 +521,13 @@ This also includes the [`typing_extensions` backport][typing_extensions.deprecat
 ```pycon
 >>> is_deprecated(warnings.deprecated('message'))
 True
->>> is_deprecated(typing_extensions('deprecated'))
+>>> is_deprecated(typing_extensions.deprecated('message'))
 True
 ```
 """
 
 
-# Aliases defined in the `typing` module using `typing._SpecialGenericAlias` (itself aliases as `alias()`):
+# Aliases defined in the `typing` module using `typing._SpecialGenericAlias` (itself aliased as `alias()`):
 DEPRECATED_ALIASES: Final[dict[Any, type[Any]]] = {
     typing.Hashable: collections.abc.Hashable,
     typing.Awaitable: collections.abc.Awaitable,
