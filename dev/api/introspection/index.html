@@ -962,16 +962,17 @@
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Starting in Python 3.14, the <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/typing.html#typing.Union"><code>typing.Union</code></a> special form <a href="https://github.com/python/cpython/pull/105511">was changed</a>
-to be an alias to <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/types.html#types.UnionType"><code>types.UnionType</code></a>. As such, it is recommended to not use this function
-anymore (provided that you only support Python 3.14 or greater), and instead perform
-the check directly:</p>
-<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">types</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">get_origin</span>
+<p>Since Python 3.14, both <code>Union[&lt;t1&gt;, &lt;t2&gt;, ...]</code> and <code>&lt;t1&gt; | &lt;t2&gt; | ...</code> forms create instances
+of the same <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/typing.html#typing.Union"><code>typing.Union</code></a> class. As such, it is recommended to not use this function
+anymore (provided that you only support Python 3.14 or greater), and instead use the
+<a class="autorefs autorefs-internal" href="../typing_objects/#typing_inspection.typing_objects.is_union"><code>typing_objects.is_union()</code></a> function directly:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">get_origin</span>
 
-<span class="n">typ</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_inspection</span><span class="w"> </span><span class="kn">import</span> <span class="n">typing_objects</span>
+
+<span class="n">typ</span> <span class="o">=</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span>  <span class="c1"># Or Union[int, str]</span>
 <span class="n">origin</span> <span class="o">=</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">typ</span><span class="p">)</span>
-<span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="n">types</span><span class="o">.</span><span class="n">UnionType</span><span class="p">:</span>
+<span class="k">if</span> <span class="n">typing_objects</span><span class="o">.</span><span class="n">is_union</span><span class="p">(</span><span class="n">origin</span><span class="p">):</span>
     <span class="o">...</span>
 </code></pre></div>
 </div>
