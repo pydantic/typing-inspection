@@ -23,7 +23,7 @@ __all__ = (
     'is_union_origin',
 )
 
-if sys.version_info >= (3, 14):
+if sys.version_info >= (3, 14) or sys.version_info < (3, 10):
 
     def is_union_origin(obj: Any, /) -> bool:
         """Return whether the provided origin is the union form.
@@ -38,56 +38,24 @@ if sys.version_info >= (3, 14):
         ```
 
         !!! note
-            Starting in Python 3.14, the [`typing.Union`][] special form [was changed](https://github.com/python/cpython/pull/105511)
-            to be an alias to [`types.UnionType`][]. As such, it is recommended to not use this function
-            anymore (provided that you only support Python 3.14 or greater), and instead perform
-            the check directly:
+            Since Python 3.14, both `Union[<t1>, <t2>, ...]` and `<t1> | <t2> | ...` forms create instances
+            of the same [`typing.Union`][] class. As such, it is recommended to not use this function
+            anymore (provided that you only support Python 3.14 or greater), and instead use the
+            [`typing_objects.is_union()`][typing_inspection.typing_objects.is_union] function directly:
 
             ```python
-            import types
             from typing import Union, get_origin
 
-            typ = Union[int, str]
+            from typing_inspection import typing_objects
+
+            typ = int | str  # Or Union[int, str]
             origin = get_origin(typ)
-            if origin is types.UnionType:
+            if typing_objects.is_union(origin):
                 ...
             ```
         """
-        return obj is types.UnionType
-        return typing_objects.is_union(obj) or obj is types.UnionType
+        return typing_objects.is_union(obj)
 
-
-if sys.version_info >= (3, 10):
-
-    def is_union_origin(obj: Any, /) -> bool:
-        """Return whether the provided origin is the union form.
-
-        ```pycon
-        >>> is_union_origin(typing.Union)
-        True
-        >>> is_union_origin(get_origin(int | str))
-        True
-        >>> is_union_origin(types.UnionType)
-        True
-        ```
-
-        !!! note
-            Starting in Python 3.14, the [`typing.Union`][] special form [was changed](https://github.com/python/cpython/pull/105511)
-            to be an alias to [`types.UnionType`][]. As such, it is recommended to not use this function
-            anymore (provided that you only support Python 3.14 or greater), and instead perform
-            the check directly:
-
-            ```python
-            import types
-            from typing import Union, get_origin
-
-            typ = Union[int, str]
-            origin = get_origin(typ)
-            if origin is types.UnionType:
-                ...
-            ```
-        """
-        return typing_objects.is_union(obj) or obj is types.UnionType
 
 else:
 
@@ -104,22 +72,23 @@ else:
         ```
 
         !!! note
-            Starting in Python 3.14, the [`typing.Union`][] special form [was changed](https://github.com/python/cpython/pull/105511)
-            to be an alias to [`types.UnionType`][]. As such, it is recommended to not use this function
-            anymore (provided that you only support Python 3.14 or greater), and instead perform
-            the check directly:
+            Since Python 3.14, both `Union[<t1>, <t2>, ...]` and `<t1> | <t2> | ...` forms create instances
+            of the same [`typing.Union`][] class. As such, it is recommended to not use this function
+            anymore (provided that you only support Python 3.14 or greater), and instead use the
+            [`typing_objects.is_union()`][typing_inspection.typing_objects.is_union] function directly:
 
             ```python
-            import types
             from typing import Union, get_origin
 
-            typ = Union[int, str]
+            from typing_inspection import typing_objects
+
+            typ = int | str  # Or Union[int, str]
             origin = get_origin(typ)
-            if origin is types.UnionType:
+            if typing_objects.is_union(origin):
                 ...
             ```
         """
-        return typing_objects.is_union(obj)
+        return typing_objects.is_union(obj) or obj is types.UnionType
 
 
 def _literal_type_check(value: Any, /) -> None:
