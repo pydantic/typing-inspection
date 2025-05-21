@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import sys
 import types
-from collections.abc import Generator, Sequence
+from collections.abc import Generator
 from dataclasses import InitVar
 from enum import Enum, IntEnum, auto
 from typing import Any, Literal, NamedTuple, cast
@@ -380,7 +380,7 @@ class InspectedAnnotation(NamedTuple):
     qualifiers: set[Qualifier]
     """The [type qualifiers][type qualifier] present on the annotation."""
 
-    metadata: Sequence[Any]
+    metadata: list[Any]
     """The annotated metadata."""
 
 
