@@ -1,3 +1,7 @@
+## v0.4.1 (2025-05-21)
+
+- Use `list` as a type hint for `InspectedAnnotation.metadata` by @Viicos in [#43](https://github.com/pydantic/typing-inspection/pull/43)
+
 ## v0.4.0 (2025-02-25)
 
 - Add support for `dataclasses.InitVar` as a type qualifier by @Viicos in [#31](https://github.com/pydantic/typing-inspection/pull/31)
