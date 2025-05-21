@@ -262,7 +262,7 @@ class AnnotationSource(IntEnum):
         y: InitVar[str] = 'test'
     ```
 
-    **Allowed type qualifiers:** [`ClassVar`][typing.ClassVar], [`Final`][typing.Final], [`InitVar`][dataclasses-init-only-variables].
+    **Allowed type qualifiers:** [`ClassVar`][typing.ClassVar], [`Final`][typing.Final], [`InitVar`][dataclasses.InitVar].
     """  # noqa: E501
 
     TYPED_DICT = auto()
