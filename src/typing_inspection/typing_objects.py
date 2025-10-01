@@ -371,7 +371,7 @@ True
 
 is_noextraitems = _compile_identity_check_function('NoExtraItems', 'is_noextraitems')
 is_noextraitems.__doc__ = """
-Return whether the argument is the [`NoExtraItems`][typing.NoExtraItems] sentinel object.
+Return whether the argument is the `NoExtraItems` sentinel object.
 
 ```pycon
 >>> is_noextraitems(NoExtraItems)

@@ -258,7 +258,7 @@ def is_nodefault(obj: Any, /) -> bool:
 
 def is_noextraitems(obj: Any, /) -> bool:
     """
-    Return whether the argument is the [`NoExtraItems`][typing.NoExtraItems] sentinel object.
+    Return whether the argument is the `NoExtraItems` sentinel object.
 
     ```pycon
     >>> is_noextraitems(NoExtraItems)
