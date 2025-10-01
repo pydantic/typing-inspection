@@ -492,6 +492,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#typing_inspection.typing_objects.is_forwardref" class="md-nav__link">
+    <span class="md-ellipsis">
+      is_forwardref
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#typing_inspection.typing_objects.is_generic" class="md-nav__link">
     <span class="md-ellipsis">
       is_generic
@@ -549,6 +558,15 @@
   <a href="#typing_inspection.typing_objects.is_nodefault" class="md-nav__link">
     <span class="md-ellipsis">
       is_nodefault
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#typing_inspection.typing_objects.is_noextraitems" class="md-nav__link">
+    <span class="md-ellipsis">
+      is_noextraitems
     </span>
   </a>
   
@@ -813,6 +831,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#typing_inspection.typing_objects.is_forwardref" class="md-nav__link">
+    <span class="md-ellipsis">
+      is_forwardref
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#typing_inspection.typing_objects.is_generic" class="md-nav__link">
     <span class="md-ellipsis">
       is_generic
@@ -870,6 +897,15 @@
   <a href="#typing_inspection.typing_objects.is_nodefault" class="md-nav__link">
     <span class="md-ellipsis">
       is_nodefault
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#typing_inspection.typing_objects.is_noextraitems" class="md-nav__link">
+    <span class="md-ellipsis">
+      is_noextraitems
     </span>
   </a>
   
@@ -1258,6 +1294,34 @@ variants, if they exists and are different.</p>
 <div class="doc doc-object doc-function">
 
 
+<h2 id="typing_inspection.typing_objects.is_forwardref" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">is_forwardref</span>
+
+
+<a href="#typing_inspection.typing_objects.is_forwardref" class="headerlink" title="Permanent link">&para;</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span class="nf">is_forwardref</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="typing_extensions.TypeIs" href="https://typing-extensions.readthedocs.io/en/latest/index.html#typing_extensions.TypeIs">TypeIs</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" title="typing.ForwardRef" href="https://docs.python.org/3/library/typing.html#typing.ForwardRef">ForwardRef</a></span><span class="p">]</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return whether the argument is an instance of <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/typing.html#typing.ForwardRef"><code>ForwardRef</code></a>.</p>
+<div class="language-pycon highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">is_forwardref</span><span class="p">(</span><span class="n">ForwardRef</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">))</span>
+<span class="go">True</span>
+</code></pre></div>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
 <h2 id="typing_inspection.typing_objects.is_generic" class="doc doc-heading">
             <span class="doc doc-object-name doc-function-name">is_generic</span>
 
@@ -1453,6 +1517,34 @@ variants, if they exists and are different.</p>
 
         <p>Return whether the argument is the <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/typing.html#typing.NoDefault"><code>NoDefault</code></a> sentinel object.</p>
 <div class="language-pycon highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">is_nodefault</span><span class="p">(</span><span class="n">NoDefault</span><span class="p">)</span>
+<span class="go">True</span>
+</code></pre></div>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="typing_inspection.typing_objects.is_noextraitems" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">is_noextraitems</span>
+
+
+<a href="#typing_inspection.typing_objects.is_noextraitems" class="headerlink" title="Permanent link">&para;</a></h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span class="nf">is_noextraitems</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return whether the argument is the <code>NoExtraItems</code> sentinel object.</p>
+<div class="language-pycon highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">is_noextraitems</span><span class="p">(</span><span class="n">NoExtraItems</span><span class="p">)</span>
 <span class="go">True</span>
 </code></pre></div>
 
