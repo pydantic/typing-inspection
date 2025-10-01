@@ -35,6 +35,7 @@ __all__ = (
     'is_never',
     'is_newtype',
     'is_nodefault',
+    'is_noextraitems',
     'is_noreturn',
     'is_notrequired',
     'is_paramspec',
@@ -57,7 +58,7 @@ _IS_PY310 = sys.version_info[:2] == (3, 10)
 
 
 def _compile_identity_check_function(member: LiteralString, function_name: LiteralString) -> FunctionType:
-    """Create a function checking that the function argument is the (unparameterized) typing :paramref:`member`.
+    """Create a function checking that the function argument is the (unparameterized) typing `member`.
 
     The function will make sure to check against both the `typing` and `typing_extensions`
     variants as depending on the Python version, the `typing_extensions` variant might be different.
@@ -364,6 +365,16 @@ Return whether the argument is the [`NoDefault`][typing.NoDefault] sentinel obje
 
 ```pycon
 >>> is_nodefault(NoDefault)
+True
+```
+"""
+
+is_noextraitems = _compile_identity_check_function('NoExtraItems', 'is_noextraitems')
+is_noextraitems.__doc__ = """
+Return whether the argument is the `NoExtraItems` sentinel object.
+
+```pycon
+>>> is_noextraitems(NoExtraItems)
 True
 ```
 """

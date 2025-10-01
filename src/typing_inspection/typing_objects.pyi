@@ -28,6 +28,7 @@ __all__ = [
     'is_never',
     'is_newtype',
     'is_nodefault',
+    'is_noextraitems',
     'is_noreturn',
     'is_notrequired',
     'is_paramspec',
@@ -251,6 +252,16 @@ def is_nodefault(obj: Any, /) -> bool:
 
     ```pycon
     >>> is_nodefault(NoDefault)
+    True
+    ```
+    """
+
+def is_noextraitems(obj: Any, /) -> bool:
+    """
+    Return whether the argument is the `NoExtraItems` sentinel object.
+
+    ```pycon
+    >>> is_noextraitems(NoExtraItems)
     True
     ```
     """

@@ -9,6 +9,7 @@
         - is_concatenate
         - is_deprecated
         - is_final
+        - is_forwardref
         - is_generic
         - is_literal
         - is_literalstring
@@ -16,6 +17,7 @@
         - is_never
         - is_newtype
         - is_nodefault
+        - is_noextraitems
         - is_noreturn
         - is_notrequired
         - is_paramspec
