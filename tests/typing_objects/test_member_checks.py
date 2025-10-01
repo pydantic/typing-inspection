@@ -34,6 +34,7 @@ names_and_functions: list[tuple[str, CheckFunction]] = [
     ('LiteralString', typing_objects.is_literalstring),
     ('Never', typing_objects.is_never),
     ('NoDefault', typing_objects.is_nodefault),
+    ('NoExtraItems', typing_objects.is_noextraitems),
     ('NoReturn', typing_objects.is_noreturn),
     ('NotRequired', typing_objects.is_notrequired),
     ('ReadOnly', typing_objects.is_readonly),
