@@ -4,7 +4,7 @@ build-backend = 'hatchling.build'
 
 [project]
 name = 'typing-inspection'
-version = '0.4.1'
+version = '0.4.2'
 license = "MIT"
 license-files = ['LICENSE']
 description = 'Runtime typing introspection tools'

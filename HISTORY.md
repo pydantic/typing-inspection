@@ -1,5 +1,13 @@
+## v0.4.2 (2025-10-01)
+
+- Add `typing_objects.is_noextraitems()` by @Viicos in [#47](https://github.com/pydantic/typing-inspection/pull/47)
+
 ## v0.4.1 (2025-05-21)
 
+- Fix compatibility with latest Python 3.14 release by @Viicos in [#37](https://github.com/pydantic/typing-inspection/pull/37)
+- Add `typing_objects.is_forwardref()` by @Viicos in [#38](https://github.com/pydantic/typing-inspection/pull/38)
+- Fix implementation of `is_union_origin()` by @Viicos in [#40](https://github.com/pydantic/typing-inspection/pull/40)
+- Add SPDX license identifier by @cdce8p in [#42](https://github.com/pydantic/typing-inspection/pull/42)
 - Use `list` as a type hint for `InspectedAnnotation.metadata` by @Viicos in [#43](https://github.com/pydantic/typing-inspection/pull/43)
 
 ## v0.4.0 (2025-02-25)
