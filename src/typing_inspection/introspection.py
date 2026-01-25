@@ -356,14 +356,14 @@ class _UnknownTypeEnum(Enum):
 UNKNOWN = _UnknownTypeEnum.UNKNOWN
 """A sentinel value used when no [type expression][] is present."""
 
-_UnkownType: TypeAlias = Literal[_UnknownTypeEnum.UNKNOWN]
+_UnknownType: TypeAlias = Literal[_UnknownTypeEnum.UNKNOWN]
 """The type of the [`UNKNOWN`][typing_inspection.introspection.UNKNOWN] sentinel value."""
 
 
 class InspectedAnnotation(NamedTuple):
     """The result of the inspected annotation."""
 
-    type: Any | _UnkownType
+    type: Any | _UnknownType
     """The final [type expression][], with [type qualifiers][type qualifier] and annotated metadata stripped.
 
     If no type expression is available, the [`UNKNOWN`][typing_inspection.introspection.UNKNOWN] sentinel
