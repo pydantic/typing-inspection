@@ -5,7 +5,7 @@ build-backend = 'hatchling.build'
 [project]
 name = 'typing-inspection'
 version = '0.4.2'
-license = "MIT"
+license = 'MIT'
 license-files = ['LICENSE']
 description = 'Runtime typing introspection tools'
 authors = [
@@ -30,7 +30,7 @@ classifiers = [
 ]
 requires-python = '>=3.9'
 dependencies = [
-    'typing-extensions>=4.12.0',
+    'typing-extensions>=4.15.0',
 ]
 
 [project.urls]
@@ -109,7 +109,7 @@ known-first-party = ['typing_inspection']
 
 [tool.pyright]
 typeCheckingMode = 'strict'
-pythonVersion = '3.13'
+pythonVersion = '3.14'
 include = ['src']
 
 [tool.pytest.ini_options]
