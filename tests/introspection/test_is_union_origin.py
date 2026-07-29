@@ -1,4 +1,3 @@
-import sys
 import types
 import typing
 from typing import Any
@@ -11,10 +10,8 @@ from typing_inspection.introspection import is_union_origin
 unions: list[Any] = [
     typing.Union,
     typing_extensions.Union,
+    types.UnionType,
 ]
-
-if sys.version_info >= (3, 10):
-    unions.append(types.UnionType)
 
 
 @pytest.mark.parametrize(
