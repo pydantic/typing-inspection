@@ -4,15 +4,12 @@ import types
 import typing
 import warnings
 from collections.abc import Callable
-from typing import Any, ForwardRef, NewType, TypeVar
+from typing import Any, ForwardRef, NewType, ParamSpecArgs, ParamSpecKwargs, TypeAlias, TypeVar
 
 import pytest
 import typing_extensions
 from typing_extensions import (
     ParamSpec,
-    ParamSpecArgs,
-    ParamSpecKwargs,
-    TypeAlias,
     TypeAliasType,
     TypeVarTuple,
     deprecated,
@@ -93,12 +90,10 @@ def test_is_newtype(new_type: NewType) -> None:
     assert typing_objects.is_newtype(new_type)
 
 
+TypingP = typing.ParamSpec('TypingP')
 TypingExtensionsP = typing_extensions.ParamSpec('TypingExtensionsP')
 
-param_specs: list[ParamSpec] = [TypingExtensionsP]
-if sys.version_info >= (3, 10):
-    TypingP = typing.ParamSpec('TypingP')
-    param_specs.append(TypingP)
+param_specs: list[ParamSpec] = [TypingP, TypingExtensionsP]
 
 
 @pytest.mark.parametrize(

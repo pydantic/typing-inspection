@@ -31,7 +31,7 @@ def test_literal_values_skip_aliases_type_check() -> None:
 
 
 def test_literal_values_type_check() -> None:
-    literal = t.Literal[1, True, False, b'', '', None, typing_objects.NoneType]
+    literal = t.Literal[1, True, False, b'', '', None, typing_objects.NoneType]  # noqa: PYI061
     expected = [1, True, False, b'', '', None]
     assert list(get_literal_values(literal, type_check=True, unpack_type_aliases='skip')) == expected
     assert list(get_literal_values(literal, type_check=True, unpack_type_aliases='eager')) == expected
