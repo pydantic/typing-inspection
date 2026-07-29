@@ -12,7 +12,7 @@ import sys
 import typing
 import warnings
 from textwrap import dedent
-from types import FunctionType, GenericAlias
+from types import FunctionType, GenericAlias, NoneType
 from typing import Any, Final
 
 import typing_extensions
@@ -133,11 +133,6 @@ def _compile_isinstance_check_function(member: LiteralString, function_name: Lit
     exec(func_code, globals_, locals_)
     return locals_[function_name]
 
-
-if sys.version_info >= (3, 10):
-    from types import NoneType
-else:
-    NoneType = type(None)
 
 # Keep this ordered, as per `typing.__all__`:
 
@@ -341,14 +336,7 @@ True
 ```
 """
 
-if sys.version_info >= (3, 10):
-    is_newtype = _compile_isinstance_check_function('NewType', 'is_newtype')
-else:  # On Python 3.10, `NewType` is a function.
-
-    def is_newtype(obj: Any, /) -> bool:
-        return hasattr(obj, '__supertype__')
-
-
+is_newtype = _compile_isinstance_check_function('NewType', 'is_newtype')
 is_newtype.__doc__ = """
 Return whether the argument is a [`NewType`][typing.NewType].
 
@@ -530,7 +518,7 @@ False
 if sys.version_info >= (3, 13):
 
     def is_deprecated(obj: Any, /) -> 'TypeIs[deprecated]':
-        return isinstance(obj, (warnings.deprecated, typing_extensions.deprecated))
+        return isinstance(obj, warnings.deprecated | typing_extensions.deprecated)
 
 else:
 
