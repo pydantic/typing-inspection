@@ -5,7 +5,7 @@ import operator
 import collections.abc
 from typing import Any, ForwardRef, Literal
 
-from typing_extensions import Unpack, get_origin
+from typing_extensions import Unpack, TypeForm, get_origin
 
 from ._types import GenericAliasProto
 from ._utils import _is_param_expr
@@ -24,7 +24,7 @@ class UnevaluatedTypeHint(Exception):
 
 class TypeHintVisitor:
 
-    def visit(self, hint: Any) -> None:
+    def visit(self, hint: TypeForm[Any]) -> None:
         if typing_objects.is_paramspecargs(hint) or typing_objects.is_paramspeckwargs(hint):
             return self.visit_bare_hint(hint)
         origin = get_origin(hint)
