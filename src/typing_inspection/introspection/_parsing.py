@@ -3,17 +3,30 @@ import sys
 import functools
 import operator
 import collections.abc
-from typing import Any, ForwardRef, Literal
+from typing import Any, ForwardRef, Literal, cast
 
 from typing_extensions import Unpack, TypeForm, get_origin
 
-from ._types import GenericAliasProto
+from ._types import ParameterizedAnnotationExpr
 from ._utils import _is_param_expr
 from typing_inspection import typing_objects
 
 
 
-class UnevaluatedTypeHint(Exception):
+class TypeHintVisitorException(Exception):
+    pass
+
+
+class InvalidExpression(TypeHintVisitorException):
+    """The expression isn't valid."""
+
+    invalid_expression: Any
+    """The encountered invalid expression."""
+
+    def __init__(self, invalid_expression: Any) -> None:
+        self.invalid_expression = invalid_expression
+
+class UnevaluatedTypeHint(TypeHintVisitorException):
     """The type hint wasn't evaluated as it still contains forward references."""
 
     forward_arg: ForwardRef | str
@@ -22,56 +35,49 @@ class UnevaluatedTypeHint(Exception):
     def __init__(self, forward_arg: ForwardRef | str) -> None:
         self.forward_arg = forward_arg
 
+
 class TypeHintVisitor:
-
-    def visit(self, hint: TypeForm[Any]) -> None:
-        if typing_objects.is_paramspecargs(hint) or typing_objects.is_paramspeckwargs(hint):
-            return self.visit_bare_hint(hint)
-        origin = get_origin(hint)
-        if typing_objects.is_generic(origin):
-            # `get_origin()` returns `Generic` if `hint` is `typing.Generic` (or `Generic[...]`).
-            raise ValueError(f'{hint} is invalid in an annotation expression')
-
+    def visit(self, annotation_expr: TypeForm[Any]) -> None:
+        origin = get_origin(annotation_expr)
         if origin is not None:
-            if hint in typing_objects.DEPRECATED_ALIASES:
+            if typing_objects.is_generic(origin):
+                # `get_origin()` returns `Generic` if `annotation_expr` is `typing.Generic` (or `Generic[...]`).
+                raise InvalidExpression(annotation_expr)
+
+            if (
                 # For *bare* deprecated aliases (such as `typing.List`), `get_origin()` returns the
-                # actual type (such as `list`). As such, we treat `hint` as a bare hint.
-                self.visit_bare_hint(hint)
-            elif sys.version_info >= (3, 10) and origin is types.UnionType:
-                self.visit_union(hint)
-            else:
-                self.visit_generic_alias(hint, origin)
+                # actual type (such as `list`). As such, we treat `annotation_expr` as a bare hint.
+                annotation_expr in typing_objects.DEPRECATED_ALIASES
+                # For `ParamSpecArgs`/`ParamSpecKwargs`, `get_origin()` returns the `ParamSpec` instance.
+                # As such, treat the `ParamSpecArgs`/`ParamSpecKwargs` as a bare annotation_expr.
+                or typing_objects.is_paramspec(origin)
+            ):
+                return self.visit_bare_annotation_expr(annotation_expr)
+
+            # Otherwise, `annotation_expr` is a generic alias or a `UnionType`. We call these two "parameterized annotation expressions":
+            parameterized_ann_expr = cast(ParameterizedAnnotationExpr, annotation_expr)
+            return self.visit_parameterized_annotation_expr(parameterized_ann_expr, origin)
         else:
-            self.visit_bare_hint(hint)
+            return self.visit_bare_annotation_expr(annotation_expr)
 
-        # origin = get_origin(hint)
-        # if origin in DEPRECATED_ALIASES.values() and not isinstance(hint, types.GenericAlias):
-        #     # hint is a deprecated generic alias, e.g. `List[int]`.
-        #     # `get_origin(List[int])` returns `list`, but we want to preserve
-        #     # `List` as the actual origin.
 
-    def visit_generic_alias(self, hint: GenericAliasProto, origin: Any) -> None:
+    def visit_parameterized_annotation_expr(self, annotation_expr: ParameterizedAnnotationExpr, origin: Any) -> None:
         if not typing_objects.is_literal(origin):
             # Note: it is important to use `hint.__args__` instead of `get_args()` as
             # they differ for some typing forms (e.g. `Annotated`, `Callable`).
             # `hint.__args__` should be guaranteed to only contain other annotation expressions.
-            for arg in hint.__args__:
+            for arg in annotation_expr.__args__:
                 self.visit(arg)
 
-    if sys.version_info >= (3, 10):
-        def visit_union(self, hint: types.UnionType) -> None:
-            for arg in hint.__args__:
-                self.visit(arg)
+    def visit_bare_annotation_expr(self, annotation_expr: Any) -> None:
+        if typing_objects.is_forwardref(annotation_expr) or isinstance(annotation_expr, str):
+            self.visit_forward_expr(annotation_expr)
 
-    def visit_bare_hint(self, hint: Any) -> None:
-        if typing_objects.is_forwardref(hint) or isinstance(hint, str):
-            self.visit_forward_hint(hint)
-
-    def visit_forward_hint(self, hint: ForwardRef | str) -> None:
-        raise UnevaluatedTypeHint(hint)
+    def visit_forward_expr(self, forward_expr: ForwardRef | str) -> None:
+        raise UnevaluatedTypeHint(forward_expr)
 
 
-# Backport of `typing._should_unflatten_callable_args`:
+# Backport of `typing._should_unflatten_callable_args()`:
 def _should_unflatten_callable_args(alias: types.GenericAlias, args: tuple[Any, ...]) -> bool:
     return (
         alias.__origin__ is collections.abc.Callable  # pyright: ignore
@@ -81,41 +87,49 @@ def _should_unflatten_callable_args(alias: types.GenericAlias, args: tuple[Any, 
 
 class TypeHintTransformer:
 
-    def visit(self, hint: Any) -> Any:
-        if typing_objects.is_paramspecargs(hint) or typing_objects.is_paramspeckwargs(hint):
-            return self.visit_bare_hint(hint)
-        origin = get_origin(hint)
-        if typing_objects.is_generic(origin):
-            # `get_origin()` returns `Generic` if `hint` is `typing.Generic` (or `Generic[...]).
-            raise ValueError(f'{hint} is invalid in an annotation expression')
-
+    def visit(self, annotation_expr: TypeForm[Any]) -> TypeForm[Any]:
+        origin = get_origin(annotation_expr)
         if origin is not None:
-            if hint in typing_objects.DEPRECATED_ALIASES:
+            if typing_objects.is_generic(origin):
+                # `get_origin()` returns `Generic` if `annotation_expr` is `typing.Generic` (or `Generic[...]`).
+                raise InvalidExpression(annotation_expr)
+
+            if (
                 # For *bare* deprecated aliases (such as `typing.List`), `get_origin()` returns the
-                # actual type (such as `list`). As such, we treat `hint` as a constant.
-                return self.visit_bare_hint(hint)
-            elif sys.version_info >= (3, 10) and origin is types.UnionType:
-                return self.visit_union(hint)
-            else:
-                return self.visit_generic_alias(hint, origin)
+                # actual type (such as `list`). As such, we treat `annotation_expr` as a bare hint.
+                annotation_expr in typing_objects.DEPRECATED_ALIASES
+                # For `ParamSpecArgs`/`ParamSpecKwargs`, `get_origin()` returns the `ParamSpec` instance.
+                # As such, treat the `ParamSpecArgs`/`ParamSpecKwargs` as a bare annotation_expr.
+                or typing_objects.is_paramspec(origin)
+            ):
+                return self.visit_bare_annotation_expr(annotation_expr)
+
+            # Otherwise, `annotation_expr` is a generic alias or a `UnionType`. We call these two "parameterized annotation expressions":
+            parameterized_ann_expr = cast(ParameterizedAnnotationExpr, annotation_expr)
+            return self.visit_parameterized_annotation_expr(parameterized_ann_expr, origin)
         else:
-            return self.visit_bare_hint(hint)
+            return self.visit_bare_annotation_expr(annotation_expr)
 
-    def visit_generic_alias(self, hint: GenericAliasProto, origin: Any) -> Any:
+    def visit_parameterized_annotation_expr(self, annotation_expr: ParameterizedAnnotationExpr, origin: Any) -> TypeForm[Any]:
         if typing_objects.is_literal(origin):
-            return hint
+            return annotation_expr
 
-        visited_args = tuple(self.visit(arg) for arg in hint.__args__)
-        if visited_args == hint.__args__:
-            return hint
+        visited_args = tuple(self.visit(arg) for arg in annotation_expr.__args__)
+        if visited_args == annotation_expr.__args__:
+            return annotation_expr
 
-        if isinstance(hint, types.GenericAlias):
+        if origin is types.UnionType:
+            return functools.reduce(operator.or_, visited_args)
+        elif isinstance(annotation_expr, types.GenericAlias):
             # Logic from `typing._eval_type()`:
-            is_unpacked = hint.__unpacked__
-            if _should_unflatten_callable_args(hint, visited_args):
-                t = hint.__origin__[(visited_args[:-1], visited_args[-1])]
+            if sys.version_info >= (3, 11):
+                is_unpacked = annotation_expr.__unpacked__
             else:
-                t = hint.__origin__[visited_args]
+                is_unpacked = False
+            if _should_unflatten_callable_args(annotation_expr, visited_args):
+                t = annotation_expr.__origin__[(visited_args[:-1], visited_args[-1])]
+            else:
+                t = annotation_expr.__origin__[visited_args]
             if is_unpacked:
                 t = Unpack[t]
             return t
@@ -123,23 +137,16 @@ class TypeHintTransformer:
             # `.copy_with()` is a method present on the private `typing._GenericAlias` class.
             # Many generic aliases (e.g. `Concatenate[]`) have special logic in this method,
             # so we can't just do `hint.__origin__[transformed_args]`.
-            return hint.copy_with(visited_args)  # pyright: ignore
+            return annotation_expr.copy_with(visited_args)  # pyright: ignore
 
-    if sys.version_info >= (3, 10):
-        def visit_union(self, hint: types.UnionType) -> Any:
-            visited_args = tuple(self.visit(arg) for arg in hint.__args__)
-            if visited_args == hint.__args__:
-                return hint
-            return functools.reduce(operator.or_, visited_args)
-
-    def visit_bare_hint(self, hint: Any) -> Any:
-        if typing_objects.is_forwardref(hint) or isinstance(hint, str):
-            return self.visit_forward_hint(hint)
+    def visit_bare_annotation_expr(self, annotation_expr: Any) -> Any:
+        if typing_objects.is_forwardref(annotation_expr) or isinstance(annotation_expr, str):
+            return self.visit_forward_expr(annotation_expr)
         else:
-            return hint
+            return annotation_expr
 
-    def visit_forward_hint(self, hint: ForwardRef | str) -> Any:
-        raise UnevaluatedTypeHint(hint)
+    def visit_forward_expr(self, forward_expr: ForwardRef | str) -> Any:
+        raise UnevaluatedTypeHint(forward_expr)
 
 
 class MultiTransformer(TypeHintTransformer):
@@ -151,8 +158,8 @@ class MultiTransformer(TypeHintTransformer):
         self.unpack_type_aliases: Literal['skip', 'lenient', 'eager'] = unpack_type_aliases
         self.type_replacements = type_replacements
 
-    def visit_generic_alias(self, hint: GenericAliasProto, origin: Any) -> Any:
-        args = hint.__args__
+    def visit_parameterized_annotation_expr(self, annotation_expr: ParameterizedAnnotationExpr, origin: Any) -> TypeForm[Any]:
+        args = annotation_expr.__args__
         if self.unpack_type_aliases != 'skip' and typing_objects.is_typealiastype(origin):
             try:
                 value = origin.__value__
@@ -161,21 +168,21 @@ class MultiTransformer(TypeHintTransformer):
                     raise
             else:
                 return self.visit(value[tuple(self.visit(arg) for arg in args)])
-        return super().visit_generic_alias(hint, origin)
+        return super().visit_parameterized_annotation_expr(annotation_expr, origin)
 
 
-    def visit_bare_hint(self, hint: Any) -> Any:
-        hint = super().visit_bare_hint(hint)
-        new_hint = self.type_replacements.get(hint, hint)
-        if self.unpack_type_aliases != 'skip' and typing_objects.is_typealiastype(new_hint):
+    def visit_bare_annotation_expr(self, annotation_expr: Any) -> Any:
+        annotation_expr = super().visit_bare_annotation_expr(annotation_expr)
+        new_annotation_expr = self.type_replacements.get(annotation_expr, annotation_expr)
+        if self.unpack_type_aliases != 'skip' and typing_objects.is_typealiastype(new_annotation_expr):
             try:
-                value = new_hint.__value__
+                value = new_annotation_expr.__value__
             except NameError:
                 if self.unpack_type_aliases == 'eager':
                     raise
             else:
                 return self.visit(value)
-        return new_hint
+        return new_annotation_expr
 
 
 def transform_hint(
