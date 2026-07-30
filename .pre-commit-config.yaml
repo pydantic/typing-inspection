@@ -1,40 +1,45 @@
 repos:
-- repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v5.0.0
-  hooks:
-  - id: no-commit-to-branch  # prevent direct commits to main branch
-  - id: check-yaml
-    args: ['--unsafe']
-  - id: check-toml
-  - id: end-of-file-fixer
-  - id: trailing-whitespace
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: no-commit-to-branch # prevent direct commits to main branch
+      - id: check-yaml
+        args: ['--unsafe']
+      - id: check-toml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
 
-- repo: local
-  hooks:
-  - id: format
-    name: Format
-    entry: make
-    args: [format]
-    language: system
-    types: [python]
-    pass_filenames: false
-  - id: lint
-    name: Lint
-    entry: make
-    args: [lint]
-    types: [python]
-    language: system
-    pass_filenames: false
-  - id: typecheck
-    name: Typecheck
-    entry: make
-    args: [typecheck]
-    language: system
-    types: [python]
-    pass_filenames: false
+  - repo: https://github.com/google/yamlfmt
+    rev: v0.21.0
+    hooks:
+      - id: yamlfmt
 
-- repo: https://github.com/codespell-project/codespell
-  rev: v2.4.1
-  hooks:
-  - id: codespell
-    exclude: '^uv\.lock$'
+  - repo: local
+    hooks:
+      - id: format
+        name: Format
+        entry: make
+        args: [format]
+        language: system
+        types: [python]
+        pass_filenames: false
+      - id: lint
+        name: Lint
+        entry: make
+        args: [lint]
+        types: [python]
+        language: system
+        pass_filenames: false
+      - id: typecheck
+        name: Typecheck
+        entry: make
+        args: [typecheck]
+        language: system
+        types: [python]
+        pass_filenames: false
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.3
+    hooks:
+      - id: codespell
+        exclude: '^uv\.lock$'
