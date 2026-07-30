@@ -1,8 +1,6 @@
-import sys
-
 from typing import Any
 
-from ._types import GenericAliasProto, TypeVarLike
+from ._types import GenericAliasLike, TypeVarLike, HasParameters
 
 from typing_inspection import typing_objects
 
@@ -34,12 +32,9 @@ def get_default(t: TypeVarLike, /) -> Any:
             return NoDefault
 
 
-def alias_substitutions(alias: GenericAliasProto, /) -> dict[TypeVarLike, Any]:
-    params: tuple[TypeVarLike, ...] | None = getattr(alias.__origin__, '__parameters__', None)
-    if params is None:
-        raise ValueError
-
+def alias_substitutions(alias: GenericAliasLike[HasParameters], /) -> dict[TypeVarLike, Any]:
     origin = alias.__origin__
+    params = alias.__origin__.__parameters__
     args = alias.__args__
 
     # TODO checks for invalid params (most of the checks are already performed
@@ -49,9 +44,9 @@ def alias_substitutions(alias: GenericAliasProto, /) -> dict[TypeVarLike, Any]:
     if typing_objects.is_typealiastype(origin) and len(params) == 1 and typing_objects.is_paramspec(params[0]):
         # The end of the documentation section at
         # https://docs.python.org/3/library/typing.html#user-defined-generic-types
-        # says:
-        # a generic with only one parameter specification variable will accept parameter
-        # lists in the forms X[[Type1, Type2, ...]] and also X[Type1, Type2, ...].
+        # mentions:
+        # > a generic with only one parameter specification variable will accept parameter
+        # > lists in the forms X[[Type1, Type2, ...]] and also X[Type1, Type2, ...].
         # However, this convenience isn't applied for type aliases.
         if len(args) == 0:
             # Unlike user-defined generics, type aliases don't fallback to the default:
@@ -74,8 +69,7 @@ def alias_substitutions(alias: GenericAliasProto, /) -> dict[TypeVarLike, Any]:
         # HARD
         pass
     else:
-        strict = {'strict': True} if sys.version_info >= (3, 10) else {}
-        return dict(zip(params, args), **strict)
+        return dict(zip(params, args, strict=True))
 
 
 class A[*Ts, T]:
@@ -85,17 +79,17 @@ class A[*Ts, T]:
 
 
 
-A[str, *tuple[*()]]
+# A[str, *tuple[*()]]
 
-A[str, *tuple[int, ...]]().a
+# A[str, *tuple[int, ...]]().a
 
 
-A[str, *tuple[int, *tuple[str, ...]]]().a
+# A[str, *tuple[int, *tuple[str, ...]]]().a
 
 
 # Backports of private `typing` functions:
 
-# Backport of `typing._is_param_expr`:
+# Backport of `typing._is_param_expr()`:
 def _is_param_expr(arg: Any) -> bool:
     return (
         arg is ...  # as in `Callable[..., Any]`
@@ -107,7 +101,7 @@ def _is_param_expr(arg: Any) -> bool:
 # Backports of the `__typing_prepare_subst__` methods of type parameter classes,
 # only available in 3.11+:
 
-def _paramspec_prepare_subst(self: ParamSpec, alias: GenericAliasProto, args: tuple[Any, ...]):
+def _paramspec_prepare_subst(self: ParamSpec, alias: GenericAliasLike, args: tuple[Any, ...]):
     params = alias.__parameters__
     i = params.index(self)
     if i == len(args) and not typing_objects.is_nodefault((default := get_default(self))):
