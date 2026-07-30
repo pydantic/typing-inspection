@@ -1,10 +1,13 @@
 name: Coverage comment, status & badge
 
-on:
+on: # zizmor: ignore[dangerous-triggers]
   workflow_run:
     workflows: [CI]
     types:
       - completed
+
+permissions:
+  contents: read
 
 jobs:
   coverage-comment:
@@ -25,7 +28,7 @@ jobs:
       # DO NOT run actions/checkout here, for security reasons
       # For details, refer to https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
       - name: Post comment
-        uses: py-cov-action/python-coverage-comment-action@v3
+        uses: py-cov-action/python-coverage-comment-action@5d8df5979747514c914e1c5a12335a7cf9a2745f # v4.1
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_PR_RUN_ID: ${{ github.event.workflow_run.id }}
@@ -37,12 +40,12 @@ jobs:
       name: coverage
 
     steps:
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           enable-cache: true
-          python-version: '3.12'
+          python-version: '3.14'
 
-      - uses: dawidd6/action-download-artifact@v8
+      - uses: dawidd6/action-download-artifact@b6e2e70617bc3265edd6dab6c906732b2f1ae151 # v21
         with:
           workflow: ci.yml
           name: 'coverage-html'

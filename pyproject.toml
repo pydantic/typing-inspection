@@ -57,6 +57,9 @@ lint = [
     'pyright>=1.1.394',
     'ruff>=0.9.6',
 ]
+build = [
+    'build',
+]
 
 
 [tool.uv]
