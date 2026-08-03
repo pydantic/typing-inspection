@@ -3,7 +3,7 @@ import sys
 import functools
 import operator
 import collections.abc
-from typing import Any, ForwardRef, Literal, cast
+from typing import Any, ForwardRef, Literal, Union, cast
 
 from typing_extensions import Unpack, TypeForm, get_origin
 
@@ -87,7 +87,7 @@ def _should_unflatten_callable_args(alias: types.GenericAlias, args: tuple[Any, 
 
 class TypeHintTransformer:
 
-    def visit(self, annotation_expr: TypeForm[Any]) -> TypeForm[Any]:
+    def visit(self, annotation_expr: TypeForm[Any]) -> Any:
         origin = get_origin(annotation_expr)
         if origin is not None:
             if typing_objects.is_generic(origin):
@@ -110,7 +110,7 @@ class TypeHintTransformer:
         else:
             return self.visit_bare_annotation_expr(annotation_expr)
 
-    def visit_parameterized_annotation_expr(self, annotation_expr: ParameterizedAnnotationExpr, origin: Any) -> TypeForm[Any]:
+    def visit_parameterized_annotation_expr(self, annotation_expr: ParameterizedAnnotationExpr, origin: Any) -> Any:
         if typing_objects.is_literal(origin):
             return annotation_expr
 
@@ -119,6 +119,13 @@ class TypeHintTransformer:
             return annotation_expr
 
         if origin is types.UnionType:
+            if sys.version_info >= (3, 14):
+                # In Python >= 3.14, types.UnionType and typing.Union are the same types. If any of
+                # the `visited_args` are strings (e.g. `('Forward', int)`), using `functools.reduce()`
+                # with `or_` fails with a `TypeError` (Encountering forward refs results in a
+                # `UnevaluatedTypeHint` by default, but users can override this by implementing
+                # `visit_forward_expr()`).
+                return Union[visited_args]
             return functools.reduce(operator.or_, visited_args)
         elif isinstance(annotation_expr, types.GenericAlias):
             # Logic from `typing._eval_type()`:

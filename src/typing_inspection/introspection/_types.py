@@ -16,7 +16,7 @@ class HasParameters(Protocol):
     # but exposed in `typeshed` and its usage is somewhat widespread already.
 
     # In theory, this should be `tuple[TypeVarLike, ...]`, but `TypeVarTuple`s get
-    # expanded as `typing.Unpack` *only* in type aliases
+    # expanded as `typing.Unpack[...]` *only* in type aliases
     # (see https://github.com/python/typeshed/blob/1da0afef/stdlib/typing_extensions.pyi#L622-L624
     # and https://github.com/python/typeshed/pull/13671#discussion_r2003207961):
     __parameters__: tuple[Any, ...]
