@@ -1,3 +1,9 @@
+## v0.4.3 (2026-08-10)
+
+- Drop support for Python 3.9 by @Viicos in [#52](https://github.com/pydantic/typing-inspection/pull/52)
+- Avoid module `getattr()` calls in `typing_objects` functions by @Viicos in [#57](https://github.com/pydantic/typing-inspection/pull/57)
+- Add Python 3.15 support by @Viicos in [#59](https://github.com/pydantic/typing-inspection/pull/59)
+
 ## v0.4.2 (2025-10-01)
 
 - Add `typing_objects.is_noextraitems()` by @Viicos in [#47](https://github.com/pydantic/typing-inspection/pull/47)
