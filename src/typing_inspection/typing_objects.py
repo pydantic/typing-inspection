@@ -82,8 +82,8 @@ def _compile_identity_check_function(member: LiteralString, function_name: Liter
     globals_: dict[str, Any] = {'Any': Any}
 
     if in_typing and in_typing_extensions:
-        # For performance reasons, don't perform `getattr()` calls on the modules, provide the objects
-        # directly:
+        # For performance reasons, cache the objects in `globals_` so the generated function avoids
+        # repeated module attribute lookups (and `typing`'s module-level `__getattr__()`):
         t_obj = getattr(typing, member)
         te_obj = getattr(typing_extensions, member)
         if t_obj is te_obj:
@@ -124,8 +124,8 @@ def _compile_isinstance_check_function(member: LiteralString, function_name: Lit
     globals_: dict[str, Any] = {'Any': Any}
 
     if in_typing and in_typing_extensions:
-        # For performance reasons, don't perform `getattr()` calls on the modules, provide the objects
-        # directly:
+        # For performance reasons, cache the objects in `globals_` so the generated function avoids
+        # repeated module attribute lookups (and `typing`'s module-level `__getattr__()`):
         t_obj = getattr(typing, member)
         te_obj = getattr(typing_extensions, member)
         if t_obj is te_obj:
