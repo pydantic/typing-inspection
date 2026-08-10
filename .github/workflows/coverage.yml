@@ -36,6 +36,10 @@ jobs:
   coverage-status-badge:
     runs-on: ubuntu-latest
 
+    permissions:
+      # smokeshow permissions to set commit status:
+      statuses: write
+
     environment:
       name: coverage
 
