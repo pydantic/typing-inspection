@@ -76,4 +76,12 @@ def test_literal_values_unpack_type_aliases_undefined(create_module) -> None:
 
 
 def test_literal_values_unhashable_type() -> None:
+    assert list(get_literal_values(t_e.Literal[[1, 'a']])) == [[1, 'a']]
+
+
+@pytest.mark.skipif(
+    sys.version_info >= (3, 14, 7),
+    reason='Unashable arguments are deduplicated (https://github.com/python/cpython/commit/3156e835a)',
+)
+def test_duplicate_literal_values_unhashable_type() -> None:
     assert list(get_literal_values(t_e.Literal[[1, 'a'], [1, 'a']])) == [[1, 'a'], [1, 'a']]  # noqa: PYI062
