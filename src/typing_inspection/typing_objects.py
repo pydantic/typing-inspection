@@ -79,15 +79,26 @@ def _compile_identity_check_function(member: LiteralString, function_name: Liter
     in_typing = hasattr(typing, member)
     in_typing_extensions = hasattr(typing_extensions, member)
 
+    globals_: dict[str, Any] = {'Any': Any}
+
     if in_typing and in_typing_extensions:
-        if getattr(typing, member) is getattr(typing_extensions, member):
-            check_code = f'obj is typing.{member}'
+        # For performance reasons, don't perform `getattr()` calls on the modules, provide the objects
+        # directly:
+        t_obj = getattr(typing, member)
+        te_obj = getattr(typing_extensions, member)
+        if t_obj is te_obj:
+            globals_['_obj'] = t_obj
+            check_code = 'obj is _obj'
         else:
-            check_code = f'obj is typing.{member} or obj is typing_extensions.{member}'
+            globals_['_t_obj'] = t_obj
+            globals_['_te_obj'] = te_obj
+            check_code = 'obj is _t_obj or obj is _te_obj'
     elif in_typing and not in_typing_extensions:
-        check_code = f'obj is typing.{member}'
+        globals_['_obj'] = getattr(typing, member)
+        check_code = 'obj is _obj'
     elif not in_typing and in_typing_extensions:
-        check_code = f'obj is typing_extensions.{member}'
+        globals_['_obj'] = getattr(typing_extensions, member)
+        check_code = 'obj is _obj'
     else:
         check_code = 'False'
 
@@ -97,7 +108,6 @@ def _compile_identity_check_function(member: LiteralString, function_name: Liter
     """)
 
     locals_: dict[str, Any] = {}
-    globals_: dict[str, Any] = {'Any': Any, 'typing': typing, 'typing_extensions': typing_extensions}
     exec(func_code, globals_, locals_)
     return locals_[function_name]
 
@@ -111,15 +121,25 @@ def _compile_isinstance_check_function(member: LiteralString, function_name: Lit
     in_typing = hasattr(typing, member)
     in_typing_extensions = hasattr(typing_extensions, member)
 
+    globals_: dict[str, Any] = {'Any': Any}
+
     if in_typing and in_typing_extensions:
-        if getattr(typing, member) is getattr(typing_extensions, member):
-            check_code = f'isinstance(obj, typing.{member})'
+        # For performance reasons, don't perform `getattr()` calls on the modules, provide the objects
+        # directly:
+        t_obj = getattr(typing, member)
+        te_obj = getattr(typing_extensions, member)
+        if t_obj is te_obj:
+            globals_['_obj'] = t_obj
+            check_code = 'isinstance(obj, _obj)'
         else:
-            check_code = f'isinstance(obj, (typing.{member}, typing_extensions.{member}))'
+            globals_['_objs'] = (t_obj, te_obj)
+            check_code = 'isinstance(obj, _objs)'
     elif in_typing and not in_typing_extensions:
-        check_code = f'isinstance(obj, typing.{member})'
+        globals_['_obj'] = getattr(typing, member)
+        check_code = 'isinstance(obj, _obj)'
     elif not in_typing and in_typing_extensions:
-        check_code = f'isinstance(obj, typing_extensions.{member})'
+        globals_['_obj'] = getattr(typing_extensions, member)
+        check_code = 'isinstance(obj, _obj)'
     else:
         check_code = 'False'
 
@@ -129,7 +149,6 @@ def _compile_isinstance_check_function(member: LiteralString, function_name: Lit
     """)
 
     locals_: dict[str, Any] = {}
-    globals_: dict[str, Any] = {'Any': Any, 'typing': typing, 'typing_extensions': typing_extensions}
     exec(func_code, globals_, locals_)
     return locals_[function_name]
 
@@ -516,14 +535,16 @@ False
 
 
 if sys.version_info >= (3, 13):
+    _deprecated_types = (warnings.deprecated, typing_extensions.deprecated)
 
     def is_deprecated(obj: Any, /) -> 'TypeIs[deprecated]':
-        return isinstance(obj, warnings.deprecated | typing_extensions.deprecated)
+        return isinstance(obj, _deprecated_types)
 
 else:
+    _deprecated_type = typing_extensions.deprecated
 
     def is_deprecated(obj: Any, /) -> 'TypeIs[deprecated]':
-        return isinstance(obj, typing_extensions.deprecated)
+        return isinstance(obj, _deprecated_type)
 
 
 is_deprecated.__doc__ = """
