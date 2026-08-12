@@ -14,6 +14,7 @@ from typing_extensions import ParamSpec, ParamSpecArgs, ParamSpecKwargs, TypeAli
 
 __all__ = [
     'DEPRECATED_ALIASES',
+    'DEPRECATED_ALIASES_IDS',
     'NoneType',
     'is_annotated',
     'is_any',
@@ -415,3 +416,6 @@ def is_deprecated(obj: Any, /) -> TypeIs[deprecated]:
 
 DEPRECATED_ALIASES: Final[dict[Any, type[Any]]]
 """A mapping between the deprecated typing aliases to their replacement, as per [PEP 585](https://peps.python.org/pep-0585/)."""
+
+DEPRECATED_ALIASES_IDS: Final[dict[int, type[Any]]]
+"""A mapping between the [identity][id] of the deprecated typing aliases to their replacement, as per [PEP 585](https://peps.python.org/pep-0585/)."""
