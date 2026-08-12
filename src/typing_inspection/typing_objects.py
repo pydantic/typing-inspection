@@ -20,6 +20,7 @@ from typing_extensions import LiteralString, TypeAliasType, TypeIs, deprecated
 
 __all__ = (
     'DEPRECATED_ALIASES',
+    'DEPRECATED_ALIASES_IDS',
     'NoneType',
     'is_annotated',
     'is_any',
@@ -609,8 +610,11 @@ DEPRECATED_ALIASES: Final[dict[Any, type[Any]]] = {
 """A mapping between the deprecated typing aliases to their replacement, as per [PEP 585](https://peps.python.org/pep-0585/)."""
 
 
+DEPRECATED_ALIASES_IDS: Final[dict[int, type[Any]]] = {id(k): v for k, v in DEPRECATED_ALIASES.items()}
+"""A mapping between the [identity][id] of the deprecated typing aliases to their replacement, as per [PEP 585](https://peps.python.org/pep-0585/)."""
+
+
 # Add the `typing_extensions` aliases:
 for alias, target in list(DEPRECATED_ALIASES.items()):
-    # Use `alias.__name__` when we drop support for Python 3.9
-    if (te_alias := getattr(typing_extensions, alias._name, None)) is not None:
+    if (te_alias := getattr(typing_extensions, alias.__name__, None)) is not None:
         DEPRECATED_ALIASES[te_alias] = target
