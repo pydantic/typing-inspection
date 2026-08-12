@@ -1,3 +1,7 @@
+## v0.4.4 (2026-08-12)
+
+- Add `typing_objects.DEPRECATED_ALIASES_ID` by @Viicos in [#63](https://github.com/pydantic/typing-inspection/pull/63)
+
 ## v0.4.3 (2026-08-10)
 
 - Drop support for Python 3.9 by @Viicos in [#52](https://github.com/pydantic/typing-inspection/pull/52)
