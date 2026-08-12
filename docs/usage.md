@@ -237,15 +237,18 @@ For instance, [`typing.List`][] is deprecated and replaced by the built-in [`lis
 the origin of an *unparameterized* deprecated type alias is the replacement type, so we will use this one:
 
 ```python
-from typing_inspection.typing_objects import DEPRECATED_ALIASES
+from typing_inspection.typing_objects import DEPRECATED_ALIASES_IDS
 
 # If `type_expr` is `typing.List`, `origin` is the built-in `list`.
 # We thus replace `type_expr` with `list`, and set `origin` to `None`
 # to emulate the same behavior if `type_expr` was `list` in the beginning:
-if origin is not None and type_expr in DEPRECATED_ALIASES:
+if origin is not None and id(type_expr) in DEPRECATED_ALIASES_IDS:  # (1)!
     type_expr = origin
     origin = None
 ```
+
+1. We check by [identity][id] as `type_expr` could be unhashable. Alternatively, `type_expr` can be checked against
+   [`DEPRECATED_ALIASES`][typing_inspection.typing_objects.DEPRECATED_ALIASES], but a `TypeError` might be raised.
 
 At this point, if `origin` is not `None`, you can safely assume that `type_expr` is a parameterized generic type.
 You can then define your own logic to handle the type expression, and have different code paths if you are

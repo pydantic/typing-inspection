@@ -35,3 +35,4 @@
         - is_union
         - is_unpack
         - DEPRECATED_ALIASES
+        - DEPRECATED_ALIASES_IDS
