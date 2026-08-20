@@ -1,4 +1,4 @@
-from types import UnionType
+from types import EllipsisType, UnionType
 from typing import Any, Protocol
 
 from typing_extensions import TypeVar, TypeAlias, ParamSpec, TypeVarTuple
@@ -35,3 +35,14 @@ class GenericAliasLike(Protocol[OriginT]):
 TypeVarLike: TypeAlias = TypeVar | TypeVarTuple | ParamSpec
 
 ParameterizedAnnotationExpr: TypeAlias = GenericAliasLike[Any] | UnionType
+
+ParameterExpr: TypeAlias = list[Any] | EllipsisType | ParamSpec | GenericAliasLike[Any]
+"""A parameter expression, as allowed as the first argument of `Callable` forms.
+
+Can be one of:
+
+* A list of annotation expressions, as in `Callable[[int, str], int]`.
+* The [ellipsis][], as in `Callable[..., int]`.
+* A [`ParamSpec`][typing.ParamSpec] instance, as in `Callable[P, int]`.
+* A [`Concatenate`][typing.Concatenate] form, as in `Callable[Concatenate[int, P], int]`.
+"""

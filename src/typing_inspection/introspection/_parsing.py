@@ -5,10 +5,10 @@ import operator
 import collections.abc
 from typing import Any, ForwardRef, Literal, Union, cast
 
-from typing_extensions import Unpack, TypeForm, get_origin
+from typing_extensions import TypeForm, get_origin
 
-from ._types import ParameterizedAnnotationExpr
-from ._utils import _is_param_expr
+from ._types import ParameterExpr, ParameterizedAnnotationExpr
+from ._utils import is_param_expr, callable_parameter_expr
 from typing_inspection import typing_objects
 
 
@@ -61,12 +61,27 @@ class TypeHintVisitor:
             return self.visit_bare_annotation_expr(annotation_expr)
 
     def visit_parameterized_annotation_expr(self, annotation_expr: ParameterizedAnnotationExpr, origin: Any) -> Any:
-        if not typing_objects.is_literal(origin):
-            # Note: it is important to use `hint.__args__` instead of `get_args()` as
-            # they differ for some typing forms (e.g. `Annotated`, `Callable`).
-            # `hint.__args__` should be guaranteed to only contain other annotation expressions.
-            for arg in annotation_expr.__args__:
+        if typing_objects.is_literal(origin):
+            return
+
+        # Note: it is important to use `hint.__args__` instead of `get_args()` as
+        # they differ for some typing forms (e.g. `Annotated`, `Callable`).
+        # `hint.__args__` should be guaranteed to only contain other annotation expressions.
+        args = annotation_expr.__args__
+        if origin is collections.abc.Callable:  # pyright: ignore[reportUnknownMemberType]
+            self.visit_parameter_expr(callable_parameter_expr(args))
+            self.visit(args[-1])
+        else:
+            for arg in args:
                 self.visit(arg)
+
+    def visit_parameter_expr(self, parameter_expr: ParameterExpr) -> Any:
+        if isinstance(parameter_expr, list):
+            for parameter in parameter_expr:
+                self.visit(parameter)
+        elif parameter_expr is not ...:
+            # A `ParamSpec` or a `Concatenate` form:
+            self.visit(cast('TypeForm[Any]', parameter_expr))
 
     def visit_bare_annotation_expr(self, annotation_expr: Any) -> Any:
         if typing_objects.is_forwardref(annotation_expr) or isinstance(annotation_expr, str):
@@ -76,21 +91,32 @@ class TypeHintVisitor:
         raise UnevaluatedTypeHint(forward_expr)
 
 
-# Vendored version of `typing._should_unflatten_callable_args()`:
-def _should_unflatten_callable_args(alias: types.GenericAlias, args: tuple[Any, ...]) -> bool:
-    return (
-        alias.__origin__ is collections.abc.Callable  # pyright: ignore
-        and not (len(args) == 2 and _is_param_expr(args[0]))
-    )
-
 
 class TypeHintTransformer(TypeHintVisitor):
     def visit_parameterized_annotation_expr(self, annotation_expr: ParameterizedAnnotationExpr, origin: Any) -> Any:
         if typing_objects.is_literal(origin):
             return annotation_expr
 
-        visited_args = tuple(self.visit(arg) for arg in annotation_expr.__args__)
-        if visited_args == annotation_expr.__args__:
+        args = annotation_expr.__args__
+
+        if origin is collections.abc.Callable:  # pyright: ignore[reportUnknownMemberType]
+            visited_parameter_expr = self.visit_parameter_expr(callable_parameter_expr(args))
+            visited_return = self.visit(args[-1])
+            visited_args: tuple[Any, ...]
+            if isinstance(visited_parameter_expr, list):
+                # Flatten back, to match the form of `__args__`:
+                visited_args = (*cast('list[Any]', visited_parameter_expr), visited_return)
+            else:
+                visited_args = (visited_parameter_expr, visited_return)
+            if visited_args == args:
+                return annotation_expr
+            if isinstance(annotation_expr, types.GenericAlias):
+                return annotation_expr.__origin__[visited_parameter_expr, visited_return]
+            # `typing.Callable[...]` aliases store (and thus expect) the flattened form:
+            return annotation_expr.copy_with(visited_args)  # pyright: ignore
+
+        visited_args = tuple(self.visit(arg) for arg in args)
+        if visited_args == args:
             return annotation_expr
 
         if origin is types.UnionType:
@@ -110,10 +136,7 @@ class TypeHintTransformer(TypeHintVisitor):
                 is_unpacked = annotation_expr.__unpacked__
             else:
                 is_unpacked = False
-            if _should_unflatten_callable_args(annotation_expr, visited_args):
-                t = annotation_expr.__origin__[(visited_args[:-1], visited_args[-1])]
-            else:
-                t = annotation_expr.__origin__[visited_args]
+            t = annotation_expr.__origin__[visited_args]
             if is_unpacked:
                 # While `Unpack[T]` and `*T` are equivalent for (static/runtime) type checkers,
                 # we preserve the 3.11 native way of expressing unpacking. This uses the same logic
@@ -125,6 +148,15 @@ class TypeHintTransformer(TypeHintVisitor):
             # Many generic aliases (e.g. `Concatenate[]`) have special logic in this method,
             # so we can't just do `hint.__origin__[transformed_args]`.
             return annotation_expr.copy_with(visited_args)  # pyright: ignore
+
+    def visit_parameter_expr(self, parameter_expr: ParameterExpr) -> Any:
+        if isinstance(parameter_expr, list):
+            return [self.visit(parameter) for parameter in parameter_expr]
+        elif parameter_expr is ...:
+            return parameter_expr
+        else:
+            # A `ParamSpec` or a `Concatenate` form:
+            return self.visit(cast('TypeForm[Any]', parameter_expr))
 
     def visit_bare_annotation_expr(self, annotation_expr: Any) -> Any:
         if typing_objects.is_forwardref(annotation_expr) or isinstance(annotation_expr, str):

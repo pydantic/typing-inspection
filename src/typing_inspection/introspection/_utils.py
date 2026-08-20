@@ -1,6 +1,7 @@
+
 from typing import Any
 
-from ._types import GenericAliasLike, TypeVarLike, HasParameters
+from ._types import GenericAliasLike, TypeVarLike, HasParameters, ParameterExpr
 
 from typing_inspection import typing_objects
 
@@ -47,19 +48,18 @@ def alias_substitutions(alias: GenericAliasLike[HasParameters], /) -> dict[TypeV
         # mentions:
         # > a generic with only one parameter specification variable will accept parameter
         # > lists in the forms X[[Type1, Type2, ...]] and also X[Type1, Type2, ...].
+        # Meaning `class A[**P]: ...; get_args(A[int, str]) == get_args(A[[int, str]]) == ((<class 'int'>, <class 'str'>),)`.
         # However, this convenience isn't applied for type aliases.
         if len(args) == 0:
-            # Unlike user-defined generics, type aliases don't fallback to the default:
+            # Unlike user-defined generics, type aliases don't fallback to the default. This covers
+            # the rare case: `type A[**P = [int]] = ...; A[*()].__args__ == ()`. Because we only
+            # have one param, the resolved default below can't reference another typevarlike:
             arg = get_default(params[0])
             if typing_objects.is_nodefault(arg):
                 raise ValueError
-        elif len(args) == 1 and not _is_param_expr(args[0]):
-            arg = args[0]
-
-        if not _is_param_expr(arg):
-            arg = (arg,)
-        elif isinstance(arg, list):
-            arg = tuple(arg)
+        elif len(args) == 1 and not is_param_expr(args[0]):
+            # Apply the convenience mentioned above:
+            args = (args,)
 
     substitutions: dict[TypeVarLike, Any] = {}
 
@@ -89,14 +89,29 @@ class A[*Ts, T]:
 
 # Backports of private `typing` functions:
 
-# Backport of `typing._is_param_expr()`:
-def _is_param_expr(arg: Any) -> bool:
+# Vendored version of `typing._is_param_expr()`, adapted to be compatible
+# with both `typing`and `typing_extensions`, and without relying on private constructs.
+# Source: https://github.com/python/cpython/blob/v3.15.0rc1/Lib/typing.py#L210
+def is_param_expr(arg: Any) -> bool:
     return (
         arg is ...  # as in `Callable[..., Any]`
         or isinstance(arg, (tuple, list))  # as in `Callable[[int, str], Any]`
         or typing_objects.is_paramspec(arg)  # as in `Callable[P, Any]`
         or typing_objects.is_concatenate(get_origin(arg))  # as in `Callable[Concatenate[int, P], Any]`
     )
+
+
+
+def callable_parameter_expr(args: tuple[Any, ...], /) -> ParameterExpr:
+    # `__args__` of callable forms is flattened (e.g. `Callable[[int, str], str]` has
+    # `__args__` set to `(int, str, str)`), unless the parameter expression is an
+    # ellipsis, a `ParamSpec` or a `Concatenate` form. Check adapted from
+    # `typing._should_unflatten_callable_args()`:
+    # https://github.com/python/cpython/blob/v3.15.0rc1/Lib/typing.py#L215
+    if len(args) == 2 and is_param_expr(args[0]):
+        return args[0]
+    return list(args[:-1])
+
 
 # Backports of the `__typing_prepare_subst__` methods of type parameter classes,
 # only available in 3.11+:
@@ -109,7 +124,7 @@ def _paramspec_prepare_subst(self: ParamSpec, alias: GenericAliasLike, args: tup
     if i >= len(args):
         raise TypeError(f"Too few arguments for {alias}")
     # Special case where Z[[int, str, bool]] == Z[int, str, bool] in PEP 612.
-    if len(params) == 1 and not _is_param_expr(args[0]):
+    if len(params) == 1 and not is_param_expr(args[0]):
         assert i == 0
         args = (args,)
     # Convert lists to tuples to help other libraries cache the results.
