@@ -76,7 +76,7 @@ class TypeHintVisitor:
         raise UnevaluatedTypeHint(forward_expr)
 
 
-# Backport of `typing._should_unflatten_callable_args()`:
+# Vendored version of `typing._should_unflatten_callable_args()`:
 def _should_unflatten_callable_args(alias: types.GenericAlias, args: tuple[Any, ...]) -> bool:
     return (
         alias.__origin__ is collections.abc.Callable  # pyright: ignore
@@ -101,6 +101,8 @@ class TypeHintTransformer(TypeHintVisitor):
                 # `UnevaluatedTypeHint` by default, but users can override this by implementing
                 # `visit_forward_expr()`).
                 return Union[visited_args]
+            # Otherwise we use `functools.reduce()` to preserve `UnionType` instances, distinct
+            # from the `typing.Union` form:
             return functools.reduce(operator.or_, visited_args)
         elif isinstance(annotation_expr, types.GenericAlias):
             # Logic from `typing._eval_type()`:
@@ -113,13 +115,10 @@ class TypeHintTransformer(TypeHintVisitor):
             else:
                 t = annotation_expr.__origin__[visited_args]
             if is_unpacked:
-                # TODO while `Unpack[T]` and `*T` are equivalent for (static/runtime) type checkers,
-                # we should be able to preserve to 3.11 native way of expressing unpacking. e.g.
-                # if `annotation_expr` was `*tuple[int, str]`, `t` becomes tuple[int, str] (with `int`
-                # and `str` visited), and instead of producing `Unpack[tuple[int, str]]`, we should be
-                # able to nest it under a dummy type (e.g. `tmp = list[*t]`), only to then retrieve the
-                # unpacked form as `tmp.__args__[0]`:
-                t = Unpack[t]
+                # While `Unpack[T]` and `*T` are equivalent for (static/runtime) type checkers,
+                # we preserve the 3.11 native way of expressing unpacking. This uses the same logic
+                # as `_rewrite_star_unpack()` in https://github.com/python/cpython/blob/v3.15.0rc1/Lib/annotationlib.py#L1138
+                t = (*t,)[0]
             return t
         else:
             # `.copy_with()` is a method present on the private `typing._GenericAlias` class.
