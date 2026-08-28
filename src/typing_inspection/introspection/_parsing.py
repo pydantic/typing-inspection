@@ -47,7 +47,7 @@ class TypeHintVisitor:
             if (
                 # For *bare* deprecated aliases (such as `typing.List`), `get_origin()` returns the
                 # actual type (such as `list`). As such, we treat `annotation_expr` as a bare hint.
-                annotation_expr in typing_objects.DEPRECATED_ALIASES
+                id(annotation_expr) in typing_objects.DEPRECATED_ALIASES_IDS
                 # For `ParamSpecArgs`/`ParamSpecKwargs`, `get_origin()` returns the `ParamSpec` instance.
                 # As such, treat the `ParamSpecArgs`/`ParamSpecKwargs` as a bare annotation_expr.
                 or typing_objects.is_paramspec(origin)
