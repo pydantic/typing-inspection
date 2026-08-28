@@ -8,7 +8,7 @@ from typing import Any, ForwardRef, Literal, Union, cast
 from typing_extensions import TypeForm, get_origin
 
 from ._types import ParameterExpr, ParameterizedAnnotationExpr
-from ._utils import is_param_expr, callable_parameter_expr
+from ._utils import callable_parameter_expr
 from typing_inspection import typing_objects
 
 
