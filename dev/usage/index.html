@@ -747,7 +747,7 @@ at runtime. This means that while the following is technically valid:</p>
 is <em>only</em> meant to be applied on the annotated type (and not the attribute that will be type hinted), you probably
 need to keep type aliases as is, and possibly error later if invalid metadata is found when inspecting the type alias.</p>
 <p>Note that type aliases are lazily evaluated. During type alias inspection, any undefined symbol
-will raise a <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/exceptions.html#NameError"><code>NameError</code></a>. To prevent this from happening, you can use <code>'skip'</code> to avoid expanding
+will raise a <a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/exceptions.html#NameError"><code>NameError</code></a>. To prevent this from happening, you can use <code>'skip'</code> to avoid expanding
 type aliases (the default), or <code>'lenient'</code> to fallback to <code>'skip'</code> if the type alias contains an undefined
 symbol:</p>
 <div class="language-pycon highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span> <span class="n">BrokenType</span> <span class="o">=</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Undefined</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
@@ -815,7 +815,7 @@ the origin of an <em>unparameterized</em> deprecated type alias is the replaceme
     <span class="n">origin</span> <span class="o">=</span> <span class="kc">None</span>
 </code></pre></div>
 <ol>
-<li>We check by <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#id">identity</a> as <code>type_expr</code> could be unhashable. Alternatively, <code>type_expr</code> can be checked against
+<li>We check by <a class="autorefs autorefs-external" href="https://docs.python.org/3/builtins/functions.html#id">identity</a> as <code>type_expr</code> could be unhashable. Alternatively, <code>type_expr</code> can be checked against
    <a class="autorefs autorefs-internal" href="../api/typing_objects/#typing_inspection.typing_objects.DEPRECATED_ALIASES"><code>DEPRECATED_ALIASES</code></a>, but a <code>TypeError</code> might be raised.</li>
 </ol>
 <p>At this point, if <code>origin</code> is not <code>None</code>, you can safely assume that <code>type_expr</code> is a parameterized generic type.
