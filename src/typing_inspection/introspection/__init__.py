@@ -11,7 +11,7 @@ from typing import Any, Literal, NamedTuple, TypeAlias, cast
 
 from typing_extensions import assert_never, get_args, get_origin  # noqa: UP035
 
-from . import typing_objects
+from .. import typing_objects
 
 __all__ = (
     'AnnotationSource',
