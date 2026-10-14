@@ -59,7 +59,8 @@ lint = [
     'ruff>=0.9.6',
 ]
 build = [
-    'build',
+    # build>=1.6 is required for hashed `--dependency-constraints-txt` files (https://github.com/pypa/build/issues/1140):
+    'build>=1.6',
 ]
 
 
