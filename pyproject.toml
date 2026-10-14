@@ -59,7 +59,7 @@ lint = [
     'ruff>=0.9.6',
 ]
 build = [
-    'build',
+    'build>=1.6',
 ]
 
 

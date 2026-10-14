@@ -9,6 +9,12 @@ install: .uv  ## Install package and dependencies for local development
 	uv sync --frozen --all-groups
 	uv run pre-commit install --install-hooks
 
+.PHONY: build-constraints
+build-constraints: .uv  ## Generate the hashed constraints file for build dependencies, used when building in CI
+	uv run --no-project python -c "import tomllib; print('\n'.join(tomllib.load(open('pyproject.toml', 'rb'))['build-system']['requires']))" \
+		| uv pip compile - --universal --python-version 3.10 --generate-hashes --upgrade \
+			--custom-compile-command 'make build-constraints' -o .github/build-constraints.txt
+
 .PHONY: test
 test:
 	uv run pytest --cov=typing_inspection
