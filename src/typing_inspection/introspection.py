@@ -474,7 +474,7 @@ def inspect_annotation(  # noqa: PLR0915
                 annotation = annotation.__args__[0]
             elif typing_objects.is_readonly(origin):
                 if 'read_only' not in allowed_qualifiers:
-                    raise ForbiddenQualifier('not_required')
+                    raise ForbiddenQualifier('read_only')
                 qualifiers.add('read_only')
                 annotation = annotation.__args__[0]
             else:
