@@ -1,3 +1,8 @@
+## v0.4.4 (2026-11-04)
+
+- Improve performance of `get_literal_values()` by @Viicos in [#70](https://github.com/pydantic/typing-inspection/pull/70)
+- Expand chained type aliases in `get_literal_values()` by @mayankdhingra02 in [#69](https://github.com/pydantic/typing-inspection/pull/69)
+
 ## v0.4.4 (2026-08-12)
 
 - Add `typing_objects.DEPRECATED_ALIASES_ID` by @Viicos in [#63](https://github.com/pydantic/typing-inspection/pull/63)
