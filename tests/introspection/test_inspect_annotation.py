@@ -62,6 +62,25 @@ def test_annotation_source_invalid_qualifiers(source: AnnotationSource, annotati
 
 
 @pytest.mark.parametrize(
+    'source',
+    [
+        AnnotationSource.ASSIGNMENT_OR_VARIABLE,
+        AnnotationSource.CLASS,
+        AnnotationSource.DATACLASS,
+        AnnotationSource.NAMED_TUPLE,
+        AnnotationSource.FUNCTION,
+        AnnotationSource.BARE,
+    ],
+)
+@pytest.mark.parametrize('annotation', [t_e.ReadOnly[int], t_e.Annotated[t_e.ReadOnly[int], 'metadata']])
+def test_forbidden_readonly_qualifier(source: AnnotationSource, annotation: Any) -> None:
+    with pytest.raises(ForbiddenQualifier) as exc_info:
+        inspect_annotation(annotation, annotation_source=source)
+
+    assert exc_info.value.qualifier == 'read_only'
+
+
+@pytest.mark.parametrize(
     ['qualifier_obj', 'qualifier_str'],
     [
         (t.Final, 'final'),
